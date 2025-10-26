@@ -1,20 +1,31 @@
-from fastapi.openapi.models import Schema
+from typing import Optional
+
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
-class UserSchema(Schema):
+class UserSchema(BaseModel):
     id: int
     name: str
     email: str
     password: str
 
 
-class CreateUser(UserSchema):
+class CreateUser(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     password: str
 
 
-class UserResponse(UserSchema):
+class UpdateUser(BaseModel):
+    id: int
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+
+
+class UserResponse(BaseModel):
     id: int
     name: str
     email: str
+
+    model_config = ConfigDict(from_attributes=True)

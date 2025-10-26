@@ -5,14 +5,12 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from pydantic import BaseModel
 
-from db.database import get_db
-
 ModelType = TypeVar("ModelType")
 SchemaType = TypeVar("SchemaType", bound=BaseModel)
 
 
 class CrudService:
-    def __init__(self, model_class: Type[ModelType], session: Session = Depends(get_db)):
+    def __init__(self, model_class: Type[ModelType], session: Session):
         self.model_class = model_class
         self.session = session
 
