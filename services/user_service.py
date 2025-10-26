@@ -1,30 +1,36 @@
+from fastapi import Depends
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from db.database import get_db
+from dependencies.exception_utils import ensure_or_404
 from models.users.users import User
-from schemas.users.user_schema import CreateUser, UserSchema, UpdateUser
+from schemas import CreateUser, UpdateUser, MessageSchema
 from services.crud_service import CrudService
 
 
-def create_user(user: CreateUser, session: Session) -> User:
-    crud_service = CrudService(model_class=User, session=session)
-    return crud_service.create(user)
+class UserService:
+    def __init__(self, session: Session = Depends(get_db)):
+        self.session = session
+        self.crud_service = CrudService(User, session)
 
+    def create(self, user: CreateUser) -> User:
+        return self.crud_service.create(user)
 
-def read_users(session: Session):
-    crud_service = CrudService(model_class=User, session=session)
-    return crud_service.read()
+    def read(self) -> list[User]:
+        return self.crud_service.read()
 
+    def get_by_id(self, user_id: int) -> User:
+        return self.crud_service.get_by_id(user_id)
 
-def get_user_by_id(user_id: int, session: Session) -> User:
-    crud_service = CrudService(model_class=User, session=session)
-    return crud_service.get_by_id(user_id)
+    def get_by_email(self, email: str) -> User:
+        return ensure_or_404(
+            self.session.scalar((select(User).where(User.email == email))),
+            "User not found",
+        )
 
+    def update(self, data: UpdateUser) -> User:
+        return self.crud_service.update(data.id, data)
 
-def update_user(data: UpdateUser, session: Session) -> User:
-    crud_service = CrudService(model_class=User, session=session)
-    return crud_service.update(data.id, data)
-
-
-def delete_user(user_id: int, session: Session):
-    crud_service = CrudService(model_class=User, session=session)
-    return crud_service.delete(user_id)
+    def delete(self, user_id: int) -> MessageSchema:
+        return self.crud_service.delete(user_id)

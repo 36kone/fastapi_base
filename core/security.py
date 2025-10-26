@@ -17,7 +17,7 @@ def create_access_token(user_id, expiration_time=timedelta(minutes=30)):
 
 
 def verify_token(
-        token: str = Depends(oauth2_scheme), session: Session = Depends(get_db)
+    token: str = Depends(oauth2_scheme), session: Session = Depends(get_db)
 ):
     try:
         dic_info = jwt.decode(token, settings.SECRET_KEY, settings.ALGORITHM)

@@ -1,9 +1,10 @@
 from typing import Type, TypeVar
 
-from fastapi import Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from pydantic import BaseModel
+
+from dependencies.exception_utils import ensure_or_404
 
 ModelType = TypeVar("ModelType")
 SchemaType = TypeVar("SchemaType", bound=BaseModel)
@@ -26,12 +27,15 @@ class CrudService:
         return self.session.scalars(select(self.model_class)).all()
 
     def get_by_id(self, id_: int) -> ModelType | None:
-        return self.session.scalar(select(self.model_class).where(self.model_class.id == id_))
+        return ensure_or_404(
+            self.session.scalar(
+                select(self.model_class).where(self.model_class.id == id_)
+            ),
+            f"{self.model_class} not found",
+        )
 
     def update(self, id_: int, data: SchemaType) -> ModelType:
         entity = self.get_by_id(id_)
-        if not entity:
-            raise ValueError("Entity not found")
         try:
             for key, value in data.model_dump(exclude_unset=True).items():
                 setattr(entity, key, value)
@@ -42,10 +46,8 @@ class CrudService:
             self.session.rollback()
             raise e
 
-    def delete(self, id_: int) -> dict:
+    def delete(self, id_: int):
         entity = self.get_by_id(id_)
-        if not entity:
-            raise ValueError("Entity not found")
         self.session.delete(entity)
         self.session.commit()
-        return {"message": "Item deleted"}
+        return {"message": f"{self.model_class} deleted"}
