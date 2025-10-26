@@ -1,10 +1,11 @@
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class UserSchema(BaseModel):
-    id: int
+    id: UUID
     name: str
     email: str
     password: str
@@ -17,13 +18,13 @@ class CreateUser(BaseModel):
 
 
 class UpdateUser(BaseModel):
-    id: int
+    id: UUID
     name: Optional[str] = None
     email: Optional[EmailStr] = None
 
 
 class UserResponse(BaseModel):
-    id: int
+    id: UUID
     name: str
     email: str
 

@@ -1,14 +1,9 @@
 from fastapi import FastAPI, Depends
-from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from controllers.router import api_router
 from db.database import get_db
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login-form")
-bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 app = FastAPI()
 

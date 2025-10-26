@@ -1,4 +1,5 @@
 from typing import Type, TypeVar
+from uuid import UUID
 
 from sqlalchemy.orm import Session
 from sqlalchemy import select
@@ -26,7 +27,7 @@ class CrudService:
     def read(self):
         return self.session.scalars(select(self.model_class)).all()
 
-    def get_by_id(self, id_: int) -> ModelType | None:
+    def get_by_id(self, id_: UUID) -> ModelType | None:
         return ensure_or_404(
             self.session.scalar(
                 select(self.model_class).where(self.model_class.id == id_)
@@ -34,7 +35,7 @@ class CrudService:
             f"{self.model_class} not found",
         )
 
-    def update(self, id_: int, data: SchemaType) -> ModelType:
+    def update(self, id_: UUID, data: SchemaType) -> ModelType:
         entity = self.get_by_id(id_)
         try:
             for key, value in data.model_dump(exclude_unset=True).items():
@@ -46,7 +47,7 @@ class CrudService:
             self.session.rollback()
             raise e
 
-    def delete(self, id_: int):
+    def delete(self, id_: UUID):
         entity = self.get_by_id(id_)
         self.session.delete(entity)
         self.session.commit()
