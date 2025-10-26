@@ -24,6 +24,9 @@ class UserService:
             name=user.name,
             email=str(user.email),
             password=get_password_hash(user.password),
+            phone=str(user.phone),
+            role=user.role,
+            is_active=user.is_active,
         )
         self.session.add(entity)
         self.session.commit()
