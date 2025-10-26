@@ -1,0 +1,53 @@
+from typing import Type, TypeVar
+
+from fastapi import Depends
+from sqlalchemy.orm import Session
+from sqlalchemy import select
+from pydantic import BaseModel
+
+from db.database import get_db
+
+ModelType = TypeVar("ModelType")
+SchemaType = TypeVar("SchemaType", bound=BaseModel)
+
+
+class CrudService:
+    def __init__(self, model_class: Type[ModelType], session: Session = Depends(get_db)):
+        self.model_class = model_class
+        self.session = session
+
+    def create(self, schema: SchemaType) -> ModelType:
+        data_dict = schema.model_dump(exclude_unset=True)
+        entity = self.model_class(**data_dict)
+        self.session.add(entity)
+        self.session.commit()
+        self.session.refresh(entity)
+        return entity
+
+    def read(self):
+        return self.session.scalars(select(self.model_class)).all()
+
+    def get_by_id(self, id_: int) -> ModelType | None:
+        return self.session.scalar(select(self.model_class).where(self.model_class.id == id_))
+
+    def update(self, id_: int, data: SchemaType) -> ModelType:
+        entity = self.get_by_id(id_)
+        if not entity:
+            raise ValueError("Entity not found")
+        try:
+            for key, value in data.model_dump(exclude_unset=True).items():
+                setattr(entity, key, value)
+            self.session.commit()
+            self.session.refresh(entity)
+            return entity
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
+    def delete(self, id_: int) -> dict:
+        entity = self.get_by_id(id_)
+        if not entity:
+            raise ValueError("Entity not found")
+        self.session.delete(entity)
+        self.session.commit()
+        return {"message": "Item deleted"}

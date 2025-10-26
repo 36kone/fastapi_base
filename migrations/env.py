@@ -3,6 +3,9 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 from dotenv import load_dotenv
+from db.database import Base
+import models  # noqa: F401
+
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -15,7 +18,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # MetaData do seu modelo (defina se necessário)
-target_metadata = None  # Pode ser a metadata do seu modelo (Base.metadata)
+target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
