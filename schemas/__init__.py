@@ -9,6 +9,13 @@ from .auth.auth_schema import (
     Token,
 )
 
+from .products.products_schema import (
+    ProductSchema,
+    ProductResponse,
+    UpdateProduct,
+    CreateProduct,
+)
+
 __all__ = [
     "MessageSchema",
     "UserSchema",
@@ -19,4 +26,8 @@ __all__ = [
     "PasswordResetConfirm",
     "ChangePasswordRequest",
     "Token",
+    "ProductSchema",
+    "ProductResponse",
+    "UpdateProduct",
+    "CreateProduct",
 ]
