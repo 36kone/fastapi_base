@@ -60,7 +60,7 @@ class UserService:
                 )
             )
             ensure_or_400(not exists_email, "Email already registered")
-        elif user.phone:
+        if user.phone:
             exists_phone = self.session.scalar(
                 select(User.id).where(
                     User.phone == user.phone,
