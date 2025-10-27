@@ -49,7 +49,7 @@ class UserService:
         return self.crud_service.update(data.id, data)
 
     def delete(self, user_id: UUID) -> MessageSchema:
-        return self.crud_service.delete(user_id)
+        return self.crud_service.soft_delete(user_id)
 
     def _validate_user_creation(self, email: Optional[EmailStr]):
         ensure_or_400(email, "Email is required")

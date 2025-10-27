@@ -8,7 +8,7 @@ from pydantic import BaseModel, EmailStr, ConfigDict
 class UserSchema(BaseModel):
     id: UUID
     name: str
-    email: str
+    email: EmailStr
     phone: str
     role: str
     password: str
@@ -19,7 +19,7 @@ class UserSchema(BaseModel):
 
 class CreateUser(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     phone: str
     role: str
     password: str
@@ -40,7 +40,7 @@ class UpdateUser(BaseModel):
 class UserResponse(BaseModel):
     id: UUID
     name: str
-    email: str
+    email: EmailStr
     phone: str
     role: str
     password_recovery: Optional[str] = None

@@ -35,7 +35,6 @@ def create_user_access_token(user):
             "username": str(user.email),
         }
     )
-
     return Token(
         access_token=access_token,
         token_type="bearer",

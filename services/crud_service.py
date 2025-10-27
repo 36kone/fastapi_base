@@ -1,3 +1,4 @@
+from datetime import datetime, UTC
 from typing import Type, TypeVar
 from uuid import UUID
 
@@ -25,12 +26,17 @@ class CrudService:
         return entity
 
     def read(self):
-        return self.session.scalars(select(self.model_class)).all()
+        return self.session.scalars(
+            select(self.model_class).where(self.model_class.deleted_at.is_(None))
+        ).all()
 
     def get_by_id(self, id_: UUID) -> ModelType | None:
         return ensure_or_404(
             self.session.scalar(
-                select(self.model_class).where(self.model_class.id == id_)
+                select(self.model_class).where(
+                    self.model_class.id == id_,
+                    self.model_class.deleted_at.is_(None),
+                )
             ),
             f"{self.model_class} not found",
         )
@@ -47,8 +53,16 @@ class CrudService:
             self.session.rollback()
             raise e
 
-    def delete(self, id_: UUID):
+    def hard_delete(self, id_: UUID):
         entity = self.get_by_id(id_)
         self.session.delete(entity)
         self.session.commit()
+        return {"message": f"{self.model_class} deleted"}
+
+    def soft_delete(self, id_: UUID):
+        entity = self.get_by_id(id_)
+        entity.deleted_at = datetime.now(UTC)
+        self.session.add(entity)
+        self.session.commit()
+        self.session.refresh(entity)
         return {"message": f"{self.model_class} deleted"}
