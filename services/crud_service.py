@@ -27,7 +27,9 @@ class CrudService:
 
     def read(self):
         return self.session.scalars(
-            select(self.model_class).where(self.model_class.deleted_at.is_(None))
+            select(self.model_class)
+            .where(self.model_class.deleted_at.is_(None))
+            .limit(100)
         ).all()
 
     def get_by_id(self, id_: UUID) -> ModelType | None:
