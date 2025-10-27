@@ -20,20 +20,26 @@ def create_user(
 
 
 @user_router.get("/", status_code=200, response_model=list[UserResponse])
-def read_users(service: UserService = Depends(), current_user: User = Depends(get_auth_user),):
+def read_users(
+    service: UserService = Depends(), current_user: User = Depends(get_auth_user)
+):
     return service.read()
 
 
 @user_router.get("/{user_id}", status_code=200, response_model=UserResponse)
 def get_user_by_id(
-    user_id: UUID, service: UserService = Depends(), current_user: User = Depends(get_auth_user),
+    user_id: UUID,
+    service: UserService = Depends(),
+    current_user: User = Depends(get_auth_user),
 ):
     return service.get_by_id(user_id)
 
 
 @user_router.get("/user/{email}", status_code=200, response_model=UserResponse)
 def get_user_by_email(
-    email: str, service: UserService = Depends(), current_user: User = Depends(get_auth_user),
+    email: str,
+    service: UserService = Depends(),
+    current_user: User = Depends(get_auth_user),
 ):
     return service.get_by_email(email)
 
@@ -49,6 +55,8 @@ def update_user(
 
 @user_router.delete("/{user_id}", status_code=200, response_model=MessageSchema)
 def delete_user(
-    user_id: UUID, service: UserService = Depends(), current_user: User = Depends(get_auth_user),
+    user_id: UUID,
+    service: UserService = Depends(),
+    current_user: User = Depends(get_auth_user),
 ):
     return service.delete(user_id)

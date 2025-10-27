@@ -38,7 +38,7 @@ class CrudService:
                     self.model_class.deleted_at.is_(None),
                 )
             ),
-            f"{self.model_class} not found",
+            "Entity not found",
         )
 
     def update(self, id_: UUID, data: SchemaType) -> ModelType:
@@ -57,7 +57,7 @@ class CrudService:
         entity = self.get_by_id(id_)
         self.session.delete(entity)
         self.session.commit()
-        return {"message": f"{self.model_class} deleted"}
+        return {"message": "Entity deleted"}
 
     def soft_delete(self, id_: UUID):
         entity = self.get_by_id(id_)
@@ -65,4 +65,4 @@ class CrudService:
         self.session.add(entity)
         self.session.commit()
         self.session.refresh(entity)
-        return {"message": f"{self.model_class} deleted"}
+        return {"message": "Entity deleted"}

@@ -1,8 +1,6 @@
-from typing import Optional
 from uuid import UUID
 
 from fastapi import Depends
-from pydantic import EmailStr
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -20,6 +18,7 @@ class UserService:
         self.crud_service = CrudService(User, session)
 
     def create(self, user: CreateUser) -> User:
+        self.__validate_user_creation(user)
         entity = User(
             name=user.name,
             email=str(user.email),
@@ -51,12 +50,20 @@ class UserService:
     def delete(self, user_id: UUID) -> MessageSchema:
         return self.crud_service.soft_delete(user_id)
 
-    def _validate_user_creation(self, email: Optional[EmailStr]):
-        ensure_or_400(email, "Email is required")
-        if email:
+    def __validate_user_creation(self, user: CreateUser):
+        ensure_or_400(user.email, "Email is required")
+        ensure_or_400(user.phone, "Phone is required")
+        if user.email:
             exists_email = self.session.scalar(
                 select(User.id).where(
-                    User.email == email,
+                    User.email == user.email,
                 )
             )
-            ensure_or_400(exists_email, "Email already registered")
+            ensure_or_400(not exists_email, "Email already registered")
+        elif user.phone:
+            exists_phone = self.session.scalar(
+                select(User.id).where(
+                    User.phone == user.phone,
+                )
+            )
+            ensure_or_400(not exists_phone, "Phone already registered")
