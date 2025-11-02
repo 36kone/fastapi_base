@@ -4,10 +4,13 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from db.database import get_db
+from dependencies.exception_utils import ensure_400
 from models import Order
+from models.users.users import User
 from schemas import CreateOrder, UpdateOrder
 from services.crud_service import CrudService
 from services.orders.order_items_service import OrderItemService
+from services.products.product_service import ProductService
 
 
 class OrderService:
@@ -15,18 +18,27 @@ class OrderService:
         self.session = session
         self.crud_service = CrudService(Order, session)
         self.order_item_service = OrderItemService(self.session)
+        self.product_service = ProductService(self.session)
 
-    def create(self, order: CreateOrder) -> Order:
+    def create(self, order: CreateOrder, user: User) -> Order:
         data_dict = order.model_dump(exclude_unset=True, exclude={"order_items"})
         entity = Order(**data_dict)
 
+        entity.user_id = user.id
+        entity.amount = 0
         self.session.add(entity)
         self.session.flush()
 
+        amount = 0
         for items in order.order_items:
+            product = self.product_service.get_by_id(items.product_id)
+            ensure_400(product.quantity == 0, "Insufficient product stock")
+            product.quantity -= items.quantity
             items.order_id = entity.id
             self.order_item_service.create(items)
+            amount += product.price * items.quantity
 
+        entity.amount = amount
         self.session.commit()
         self.session.refresh(entity)
         return entity

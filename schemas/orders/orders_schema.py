@@ -19,9 +19,7 @@ class CreateOrderItem(BaseModel):
 
 
 class CreateOrder(BaseModel):
-    user_id: UUID
     description: str
-    amount: float
     order_items: List[CreateOrderItem]
 
 

@@ -16,7 +16,7 @@ def create_order(
     service: OrderService = Depends(),
     current_user: User = Depends(get_auth_user),
 ):
-    return service.create(data)
+    return service.create(data, current_user)
 
 
 @orders_router.get("/", status_code=200, response_model=list[OrderResponse])

@@ -20,4 +20,4 @@ class Order(Base):
     updated_at = Column(TIMESTAMP, onupdate=func.now())
     deleted_at = Column(DateTime, nullable=True)
 
-    order_items = relationship("OrderItem", back_populates="product")
+    order_items = relationship("OrderItem", back_populates="order")
