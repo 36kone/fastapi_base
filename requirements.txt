@@ -2,10 +2,13 @@ python-dotenv
 pydantic==2.12.3
 python-jose==3.5.0
 sqlalchemy==2.0.44
-fastapi~=0.119.1
-ruff==0.14.1
+fastapi==0.120.0
+ruff==0.14.2
 alembic==1.17.0
-bcrypt==3.2.2
+bcrypt==4.1.2
 passlib==1.7.4
 pydantic-settings==2.11.0
 uvicorn==0.38.0
+pytest==8.4.2
+httpx==0.28.1
+factory_boy==3.3.3
