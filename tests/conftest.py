@@ -21,10 +21,10 @@ class UserFactory(factory.Factory):
     class Meta:
         model = User
 
-    name = factory.Sequence(lambda n: f'test_user_{n}')
-    email = factory.LazyAttribute(lambda obj: f'{obj.name}@test.com')
-    phone = factory.Sequence(lambda n: f'5551999999{n:03d}')
-    password = factory.LazyAttribute(lambda obj: f'{obj.name}_password')
+    name = factory.Sequence(lambda n: f"test_user_{n}")
+    email = factory.LazyAttribute(lambda obj: f"{obj.name}@test.com")
+    phone = factory.Sequence(lambda n: f"5551999999{n:03d}")
+    password = factory.LazyAttribute(lambda obj: f"{obj.name}_password")
     role = "user"
 
 

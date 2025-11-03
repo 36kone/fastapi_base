@@ -16,18 +16,13 @@ from .products.products_schema import (
     CreateProduct,
 )
 
-from .orders.orders_schema import (
-    OrderSchema,
-    OrderResponse,
-    CreateOrder,
-    UpdateOrder
-)
+from .orders.orders_schema import OrderSchema, OrderResponse, CreateOrder, UpdateOrder
 
 from .orders.order_items_schema import (
     OrderItemSchema,
     OrderItemResponse,
     CreateOrderItem,
-    UpdateOrderItem
+    UpdateOrderItem,
 )
 
 __all__ = [
@@ -51,5 +46,5 @@ __all__ = [
     "OrderItemSchema",
     "OrderItemResponse",
     "CreateOrderItem",
-    "UpdateOrderItem"
+    "UpdateOrderItem",
 ]

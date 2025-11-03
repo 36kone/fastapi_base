@@ -52,10 +52,8 @@ class OrderService:
 
     def get_by_user_id(self, user_id: UUID):
         return ensure_or_404(
-            self.session.scalars(
-                select(Order)
-                .where(Order.user_id == user_id)
-            ).all(), "User orders not found"
+            self.session.scalars(select(Order).where(Order.user_id == user_id)).all(),
+            "User orders not found",
         )
 
     def update(self, order: UpdateOrder) -> Order:

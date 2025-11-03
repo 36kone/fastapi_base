@@ -2,7 +2,6 @@ import logging
 from datetime import datetime, UTC
 
 
-
 def test_create_user(client, token):
     body = {
         "name": "test",
@@ -13,9 +12,7 @@ def test_create_user(client, token):
         "is_active": True,
     }
     response = client.post(
-        '/api/users/',
-        json=body,
-        headers={"Authorization": f"Bearer {token}"}
+        "/api/users/", json=body, headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 201
     data = response.json()
@@ -24,10 +21,7 @@ def test_create_user(client, token):
 
 
 def test_get_users(client, token):
-    response = client.get(
-        "/api/users/",
-        headers={"Authorization": f"Bearer {token}"}
-    )
+    response = client.get("/api/users/", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     data = response.json()
     logging.info(f"GET USERS: {data}")
@@ -37,8 +31,7 @@ def test_get_users(client, token):
 
 def test_get_user_by_id(client, token, user):
     response = client.get(
-        f"/api/users/{user.id}",
-        headers={"Authorization": f"Bearer {token}"}
+        f"/api/users/{user.id}", headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 200
     data = response.json()
@@ -47,8 +40,7 @@ def test_get_user_by_id(client, token, user):
 
 def test_get_user_by_email(client, token, user):
     response = client.get(
-        f"/api/users/user/{user.email}",
-        headers={"Authorization": f"Bearer {token}"}
+        f"/api/users/user/{user.email}", headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 200
     data = response.json()
@@ -69,9 +61,7 @@ def test_update_user(client, token, user):
         "password_recovery_expire": str(now),
     }
     response = client.put(
-        '/api/users/{user.id}',
-        json=body,
-        headers={"Authorization": f"Bearer {token}"}
+        "/api/users/{user.id}", json=body, headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 200
     data = response.json()
@@ -80,7 +70,6 @@ def test_update_user(client, token, user):
 
 def test_delete_user(client, token, user):
     response = client.delete(
-        f"/api/users/{user.id}",
-        headers={"Authorization": f"Bearer {token}"}
+        f"/api/users/{user.id}", headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 200

@@ -4,7 +4,12 @@ from fastapi import APIRouter, Depends
 
 from app.dependencies.authentication import get_auth_user
 from app.models.users.users import User
-from app.schemas import OrderItemResponse, CreateOrderItem, UpdateOrderItem, MessageSchema
+from app.schemas import (
+    OrderItemResponse,
+    CreateOrderItem,
+    UpdateOrderItem,
+    MessageSchema,
+)
 from app.services.orders.order_items_service import OrderItemService
 
 order_item_router = APIRouter()
@@ -26,7 +31,9 @@ def read_order_items(
     return service.read()
 
 
-@order_item_router.get("/{order_item_id}", status_code=200, response_model=OrderItemResponse)
+@order_item_router.get(
+    "/{order_item_id}", status_code=200, response_model=OrderItemResponse
+)
 def get_order_item_by_id(
     order_id: UUID,
     service: OrderItemService = Depends(),
@@ -35,7 +42,9 @@ def get_order_item_by_id(
     return service.get_by_id(order_id)
 
 
-@order_item_router.put("/{order_item_id}", status_code=200, response_model=OrderItemResponse)
+@order_item_router.put(
+    "/{order_item_id}", status_code=200, response_model=OrderItemResponse
+)
 def update_order_item(
     data: UpdateOrderItem,
     service: OrderItemService = Depends(),
@@ -44,7 +53,9 @@ def update_order_item(
     return service.update(data)
 
 
-@order_item_router.delete("/{order_item_id}", status_code=200, response_model=MessageSchema)
+@order_item_router.delete(
+    "/{order_item_id}", status_code=200, response_model=MessageSchema
+)
 def delete_order_item(
     user_id: UUID,
     service: OrderItemService = Depends(),

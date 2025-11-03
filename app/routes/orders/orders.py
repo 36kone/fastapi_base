@@ -35,7 +35,9 @@ def get_order_by_id(
     return service.get_by_id(order_id)
 
 
-@orders_router.get("/user/{user_id}", status_code=200, response_model=list[OrderResponse])
+@orders_router.get(
+    "/user/{user_id}", status_code=200, response_model=list[OrderResponse]
+)
 def get_orders_by_user_id(
     user_id: UUID,
     service: OrderService = Depends(),
