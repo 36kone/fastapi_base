@@ -14,9 +14,7 @@ def product(client, token):
         "quantity": 1,
     }
     response = client.post(
-        '/api/products',
-        json=body,
-        headers={"Authorization": f"Bearer {token}"}
+        "/api/products", json=body, headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 201
     data = response.json()
@@ -34,9 +32,7 @@ def test_create_product(client, token):
         "quantity": 1,
     }
     response = client.post(
-        '/api/products',
-        json=body,
-        headers={"Authorization": f"Bearer {token}"}
+        "/api/products", json=body, headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 201
     data = response.json()
@@ -45,10 +41,7 @@ def test_create_product(client, token):
 
 
 def test_get_products(client, token):
-    response = client.get(
-        "/api/products",
-        headers={"Authorization": f"Bearer {token}"}
-    )
+    response = client.get("/api/products", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     data = response.json()
     logging.info(f"GET PRODUCTS: {data}")
@@ -57,8 +50,7 @@ def test_get_products(client, token):
 
 def test_get_product_by_id(client, token, product):
     response = client.get(
-        f"/api/products/{product['id']}",
-        headers={"Authorization": f"Bearer {token}"}
+        f"/api/products/{product['id']}", headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 200
     data = response.json()
@@ -78,7 +70,7 @@ def test_update_product(client, token, product):
     response = client.put(
         f"/api/products/{product['id']}",
         json=body,
-        headers={"Authorization": f"Bearer {token}"}
+        headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 200
     data = response.json()
@@ -87,7 +79,6 @@ def test_update_product(client, token, product):
 
 def test_delete_product(client, token, product):
     response = client.delete(
-        f"/api/products/{product['id']}",
-        headers={"Authorization": f"Bearer {token}"}
+        f"/api/products/{product['id']}", headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 200
