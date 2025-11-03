@@ -46,8 +46,8 @@ def update_product(
 
 @product_router.delete("/{product_id}", status_code=200, response_model=MessageSchema)
 def delete_product(
-    user_id: UUID,
+    product_id: UUID,
     service: ProductService = Depends(),
     current_user: User = Depends(get_auth_user),
 ):
-    return service.delete(user_id)
+    return service.delete(product_id)
