@@ -2,12 +2,16 @@ from datetime import datetime, UTC, timedelta
 from typing import Any
 from uuid import UUID
 
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import (
+    OAuth2PasswordBearer,
+    HTTPBearer,
+    HTTPAuthorizationCredentials,
+)
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Security
 from jose import jwt, JWTError
 
 from app.db.database import get_db
@@ -16,6 +20,7 @@ from app.schemas import Token
 from app.schemas.users.user_schema import UserResponse
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+bearer_scheme = HTTPBearer(auto_error=False)
 
 
 def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
@@ -65,7 +70,15 @@ def verify_token(token: str = Depends(oauth2_scheme)):
     return
 
 
-def get_auth_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def get_auth_user(
+    bearer: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    oauth2: str | None = Depends(oauth2_scheme),
+    db: Session = Depends(get_db),
+):
+    token = bearer.credentials if bearer else oauth2
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
     credentials_exception = HTTPException(
         status_code=401,
         detail="Could not validate credentials",

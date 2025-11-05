@@ -24,9 +24,9 @@ class CreateOrder(BaseModel):
 
 
 class UpdateOrder(BaseModel):
-    user_id: UUID
-    description: str
-    amount: float
+    id: UUID
+    description: Optional[str] = None
+    amount: Optional[float] = None
 
 
 class OrderResponse(OrderSchema):

@@ -23,8 +23,8 @@ class OrderItemService:
     def get_by_id(self, id_: UUID) -> OrderItem:
         return self.crud_service.get_by_id(id_)
 
-    def update(self, order_item: UpdateOrderItem) -> OrderItem:
-        return self.crud_service.update(order_item.id, order_item)
+    def update(self, id_: UUID, order_item: UpdateOrderItem) -> OrderItem:
+        return self.crud_service.update(id_, order_item)
 
     def delete(self, id_: UUID) -> OrderItem:
         return self.crud_service.soft_delete(id_)

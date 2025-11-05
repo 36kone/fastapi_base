@@ -56,8 +56,8 @@ class OrderService:
             "User orders not found",
         )
 
-    def update(self, order: UpdateOrder) -> Order:
-        return self.crud_service.update(order.id, order)
+    def update(self, id_: UUID, order: UpdateOrder) -> Order:
+        return self.crud_service.update(id_, order)
 
     def delete(self, id_: UUID) -> Order:
         return self.crud_service.soft_delete(id_)

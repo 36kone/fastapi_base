@@ -48,17 +48,18 @@ def get_orders_by_user_id(
 
 @orders_router.put("/{order_id}", status_code=200, response_model=OrderResponse)
 def update_order(
+    order_id: UUID,
     data: UpdateOrder,
     service: OrderService = Depends(),
     current_user: User = Depends(get_auth_user),
 ):
-    return service.update(data)
+    return service.update(order_id, data)
 
 
 @orders_router.delete("/{order_id}", status_code=200, response_model=MessageSchema)
 def delete_order(
-    user_id: UUID,
+    order_id: UUID,
     service: OrderService = Depends(),
     current_user: User = Depends(get_auth_user),
 ):
-    return service.delete(user_id)
+    return service.delete(order_id)
