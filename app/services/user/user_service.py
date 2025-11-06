@@ -5,9 +5,8 @@ from sqlalchemy.orm import Session
 
 from app.core.security import get_password_hash
 from app.dependencies.exception_utils import ensure_or_404, ensure_or_400
-from app.models.users.users import User
-from app.schemas.users.user_schema import CreateUser, UpdateUser
-from app.schemas.message_schema import MessageSchema
+from app.models import User
+from app.schemas import CreateUser, UpdateUser, MessageSchema
 from app.services.crud_service import CrudService
 
 

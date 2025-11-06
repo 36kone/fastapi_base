@@ -20,5 +20,5 @@ class OrderItem(Base):
     updated_at = Column(TIMESTAMP, onupdate=func.now())
     deleted_at = Column(DateTime, nullable=True)
 
-    order = relationship("Order", back_populates="order_items")
-    product = relationship("Product", back_populates="order_items")
+    order = relationship("Order", back_populates="order_items", lazy="selectin")
+    product = relationship("Product", back_populates="order_items", lazy="selectin")

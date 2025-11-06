@@ -4,9 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from app.db.database import get_db
 from app.dependencies.authentication import get_auth_user
-from app.models.users.users import User
-from app.schemas.message_schema import MessageSchema
-from app.schemas.orders.orders_schema import OrderResponse, CreateOrder, UpdateOrder
+from app.models import User
+from app.schemas import OrderResponse, CreateOrder, UpdateOrder, MessageSchema
 from app.services.orders.orders_service import OrderService
 
 orders_router = APIRouter()

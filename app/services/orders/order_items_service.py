@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 
 from app.models import OrderItem
-from app.schemas.orders.order_items_schema import CreateOrderItem, UpdateOrderItem
+from app.schemas import CreateOrderItem, UpdateOrderItem
 from app.services.crud_service import CrudService
 
 

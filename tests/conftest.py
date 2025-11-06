@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.main import app
-from app.db.database import get_db, Base
+from app.db.database import get_db
 from app.models import User
 from app.core.security import get_password_hash
 
@@ -52,7 +52,6 @@ def session(monkeypatch):
         yield session
 
     database.Base.metadata.drop_all(engine)
-
 
 
 # -----------------------------

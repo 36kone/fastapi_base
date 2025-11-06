@@ -4,8 +4,6 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
-from app.schemas.orders.order_items_schema import OrderItemResponse
-
 
 class OrderSchema(BaseModel):
     id: UUID
@@ -31,8 +29,14 @@ class UpdateOrder(BaseModel):
     amount: Optional[float] = None
 
 
+class OrderItem(BaseModel):
+    id: UUID
+    product_id: UUID
+    quantity: float
+
+
 class OrderResponse(OrderSchema):
-    order_items: List[OrderItemResponse] = []
+    order_items: List[OrderItem] = []
     created_at: datetime
     updated_at: Optional[datetime] = None
     deleted_at: Optional[datetime] = None

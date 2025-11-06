@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 
 from app.dependencies.exception_utils import ensure_400, ensure_or_404
 from app.models import Order
-from app.models.users.users import User
-from app.schemas.orders.orders_schema import CreateOrder, UpdateOrder
+from app.models import User
+from app.schemas import CreateOrder, UpdateOrder
 from app.services.crud_service import CrudService
 from app.services.orders.order_items_service import OrderItemService
 from app.services.products.product_service import ProductService

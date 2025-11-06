@@ -1,4 +1,4 @@
-# from uuid import UUID
+from uuid import UUID
 
 # from fastapi import Request
 # from pydantic.v1 import EmailStr
@@ -10,16 +10,16 @@ from fastapi.security import OAuth2PasswordRequestForm
 # from core.config import settings
 from app.dependencies.exception_utils import ensure_or_400
 
-# from schemas import (
-#    UserResponse,
-#    Token,
-#    ChangePasswordRequest,
-#    PasswordResetRequest,
-#    PasswordResetConfirm
-# )
+from app.schemas import (
+    #    UserResponse,
+    #    Token,
+    ChangePasswordRequest,
+    #    PasswordResetRequest,
+    #    PasswordResetConfirm
+)
 from app.core.security import (
     verify_password,
-    # get_password_hash,
+    get_password_hash,
 )
 from app.dependencies.authentication import create_user_access_token
 from app.services.user.user_service import UserService
@@ -40,23 +40,18 @@ class AuthService:
 
         return create_user_access_token(user)
 
-    # def change_password(
-    #         self,
-    #         data: ChangePasswordRequest,
-    #         user_id: UUID,
-    #         db: DBSession,
-    # ):
-    #     current_user = self.user_service.get_by_id(user_id)
-    #     ensure_or_400(
-    #         verify_password(data.current_password, current_user.password),
-    #         "Current password is incorrect",
-    #    )
-    #
-    #     current_user.password = get_password_hash(data.new_password)
-    #    db.commit()
-    #    db.refresh(current_user)
-    #
-    #    return {"message": "Password changed successfully"}
+    def change_password(self, data: ChangePasswordRequest, user_id: UUID):
+        current_user = self.user_service.get_by_id(user_id)
+        ensure_or_400(
+            verify_password(data.current_password, current_user.password),
+            "Current password is incorrect",
+        )
+
+        current_user.password = get_password_hash(data.new_password)
+
+        self.db.commit()
+        self.db.refresh(current_user)
+        return {"message": "Password changed successfully"}
 
     # async def request_password_reset(
     #         self,

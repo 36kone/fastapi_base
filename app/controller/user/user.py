@@ -4,9 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from app.db.database import get_db
 from app.dependencies.authentication import get_auth_user
-from app.models.users.users import User
-from app.schemas.message_schema import MessageSchema
-from app.schemas.users.user_schema import UserResponse, UpdateUser, CreateUser
+from app.models import User
+from app.schemas import UserResponse, CreateUser, UpdateUser, MessageSchema
 from app.services.user.user_service import UserService
 
 user_router = APIRouter()

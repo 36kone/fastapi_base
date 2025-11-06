@@ -4,13 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from app.db.database import get_db
 from app.dependencies.authentication import get_auth_user
-from app.models.users.users import User
-from app.schemas.message_schema import MessageSchema
-from app.schemas.products.products_schema import (
-    CreateProduct,
-    ProductResponse,
-    UpdateProduct,
-)
+from app.models import User
+from app.schemas import CreateProduct, ProductResponse, UpdateProduct, MessageSchema
 from app.services.products.product_service import ProductService
 
 product_router = APIRouter()
