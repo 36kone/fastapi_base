@@ -1,12 +1,10 @@
 # from uuid import UUID
-from fastapi import Depends
 
 # from fastapi import Request
 # from pydantic.v1 import EmailStr
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.db.database import get_db
 # from models import User
 
 # from core.config import settings
@@ -28,11 +26,9 @@ from app.services.user.user_service import UserService
 
 
 class AuthService:
-    def __init__(
-        self, db: Session = Depends(get_db), user_service: UserService = Depends()
-    ):
+    def __init__(self, db: Session):
         self.db = db
-        self.user_service = user_service
+        self.user_service = UserService(self.db)
 
     def login(self, form_data: OAuth2PasswordRequestForm):
         user = self.user_service.get_by_email(form_data.username)

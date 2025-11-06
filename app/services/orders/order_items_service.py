@@ -1,18 +1,16 @@
 from uuid import UUID
 
-from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from app.db.database import get_db
 from app.models import OrderItem
-from app.schemas import CreateOrderItem, UpdateOrderItem
+from app.schemas.orders.order_items_schema import CreateOrderItem, UpdateOrderItem
 from app.services.crud_service import CrudService
 
 
 class OrderItemService:
-    def __init__(self, session: Session = Depends(get_db)):
+    def __init__(self, session: Session):
         self.session = session
-        self.crud_service = CrudService(OrderItem, session)
+        self.crud_service = CrudService(OrderItem, self.session)
 
     def create(self, order_items: CreateOrderItem) -> OrderItem:
         return self.crud_service.create(order_items)

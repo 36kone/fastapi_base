@@ -1,21 +1,20 @@
 from uuid import UUID
 
-from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.security import get_password_hash
-from app.db.database import get_db
 from app.dependencies.exception_utils import ensure_or_404, ensure_or_400
 from app.models.users.users import User
-from app.schemas import CreateUser, UpdateUser, MessageSchema
+from app.schemas.users.user_schema import CreateUser, UpdateUser
+from app.schemas.message_schema import MessageSchema
 from app.services.crud_service import CrudService
 
 
 class UserService:
-    def __init__(self, session: Session = Depends(get_db)):
+    def __init__(self, session: Session):
         self.session = session
-        self.crud_service = CrudService(User, session)
+        self.crud_service = CrudService(User, self.session)
 
     def create(self, user: CreateUser) -> User:
         self.__validate_user_creation(user)

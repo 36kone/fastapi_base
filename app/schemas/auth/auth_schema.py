@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
-from app.schemas import UserResponse
+from app.schemas.users.user_schema import UserResponse
 
 
 class PasswordResetRequest(BaseModel):

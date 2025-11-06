@@ -1,0 +1,85 @@
+from uuid import UUID
+from fastapi import APIRouter, Depends, HTTPException
+
+from app.db.database import get_db
+from app.dependencies.authentication import get_auth_user
+from app.models.users.users import User
+from app.schemas.message_schema import MessageSchema
+from app.schemas.orders.order_items_schema import (
+    OrderItemResponse,
+    CreateOrderItem,
+    UpdateOrderItem,
+)
+from app.services.orders.order_items_service import OrderItemService
+
+order_item_router = APIRouter()
+
+
+@order_item_router.post("/", status_code=201, response_model=OrderItemResponse)
+def create_order_item(
+    data: CreateOrderItem,
+    current_user: User = Depends(get_auth_user),
+):
+    try:
+        with get_db() as db:
+            return OrderItemService(db).create(data)
+    except HTTPException as exc:
+        raise exc
+    except Exception as e:
+        raise e
+
+
+@order_item_router.get("/", status_code=200, response_model=list[OrderItemResponse])
+def read_order_items(
+    current_user: User = Depends(get_auth_user),
+):
+    try:
+        with get_db() as db:
+            return OrderItemService(db).read()
+    except HTTPException as exc:
+        raise exc
+    except Exception as e:
+        raise e
+
+
+@order_item_router.get("/{id_}", status_code=200, response_model=OrderItemResponse)
+def get_order_item_by_id(
+    id_: UUID,
+    current_user: User = Depends(get_auth_user),
+):
+    try:
+        with get_db() as db:
+            return OrderItemService(db).get_by_id(id_)
+    except HTTPException as exc:
+        raise exc
+    except Exception as e:
+        raise e
+
+
+@order_item_router.put("/{id_}", status_code=200, response_model=OrderItemResponse)
+def update_order_item(
+    id_: UUID,
+    data: UpdateOrderItem,
+    current_user: User = Depends(get_auth_user),
+):
+    try:
+        with get_db() as db:
+            return OrderItemService(db).update(id_, data)
+    except HTTPException as exc:
+        raise exc
+    except Exception as e:
+        raise e
+
+
+@order_item_router.delete("/{id_}", status_code=200, response_model=MessageSchema)
+def delete_order_item(
+    id_: UUID,
+    current_user: User = Depends(get_auth_user),
+):
+    try:
+        with get_db() as db:
+            return OrderItemService(db).delete(id_)
+    except HTTPException as exc:
+        raise exc
+    except Exception as e:
+        raise e

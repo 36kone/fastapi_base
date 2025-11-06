@@ -74,7 +74,9 @@ def test_create_order_item(client, token, order, product):
 
 
 def test_get_order_items(client, token):
-    response = client.get("/api/order-items", headers={"Authorization": f"Bearer {token}"})
+    response = client.get(
+        "/api/order-items", headers={"Authorization": f"Bearer {token}"}
+    )
     assert response.status_code == 200
     data = response.json()
     logging.info(f"GET ORDER ITEMS: {data}")
@@ -83,7 +85,8 @@ def test_get_order_items(client, token):
 
 def test_get_order_item_by_id(client, token, order_item):
     response = client.get(
-        f"/api/order-items/{order_item['id']}", headers={"Authorization": f"Bearer {token}"}
+        f"/api/order-items/{order_item['id']}",
+        headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 200
     data = response.json()

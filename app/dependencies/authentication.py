@@ -16,7 +16,7 @@ from jose import jwt, JWTError
 
 from app.db.database import get_db
 from app.models.users.users import User
-from app.schemas import Token
+from app.schemas.auth.auth_schema import Token
 from app.schemas.users.user_schema import UserResponse
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
@@ -73,7 +73,6 @@ def verify_token(token: str = Depends(oauth2_scheme)):
 def get_auth_user(
     bearer: HTTPAuthorizationCredentials = Security(bearer_scheme),
     oauth2: str | None = Depends(oauth2_scheme),
-    db: Session = Depends(get_db),
 ):
     token = bearer.credentials if bearer else oauth2
     if not token:
@@ -96,7 +95,8 @@ def get_auth_user(
 
     query = select(User).where(User.id == user_id)
 
-    user = db.scalar(query)
+    with get_db() as db:
+        user = db.scalar(query)
 
     if not user_id:
         raise credentials_exception

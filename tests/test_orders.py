@@ -71,7 +71,7 @@ def test_get_orders(client, token):
 
 def test_get_order_by_id(client, token, order):
     response = client.get(
-        f"/api/orders/{order["id"]}", headers={"Authorization": f"Bearer {token}"}
+        f"/api/orders/{order['id']}", headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 200
     data = response.json()
@@ -84,7 +84,7 @@ def test_update_order(client, token, order):
         "description": "test update",
     }
     response = client.put(
-        f"/api/orders/{order["id"]}",
+        f"/api/orders/{order['id']}",
         json=body,
         headers={"Authorization": f"Bearer {token}"},
     )
@@ -96,7 +96,7 @@ def test_update_order(client, token, order):
 
 def test_delete_order(client, token, order):
     response = client.delete(
-        f"/api/orders/{order["id"]}", headers={"Authorization": f"Bearer {token}"}
+        f"/api/orders/{order['id']}", headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 200
     data = response.json()
