@@ -27,9 +27,7 @@ def create_order(
 
 
 @orders_router.get("/", status_code=200, response_model=list[OrderResponse])
-def read_orders(
-    current_user: User = Depends(get_auth_user)
-):
+def read_orders(current_user: User = Depends(get_auth_user)):
     try:
         with get_db() as db:
             return OrderService(db).read()

@@ -31,9 +31,7 @@ def create_product(
 
 
 @product_router.get("/", status_code=200, response_model=list[ProductResponse])
-def read_products(
-    current_user: User = Depends(get_auth_user)
-):
+def read_products(current_user: User = Depends(get_auth_user)):
     try:
         with get_db() as db:
             return ProductService(db).read()

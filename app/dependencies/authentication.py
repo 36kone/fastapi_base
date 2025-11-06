@@ -8,7 +8,6 @@ from fastapi.security import (
     HTTPAuthorizationCredentials,
 )
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from fastapi import Depends, HTTPException, Security

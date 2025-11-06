@@ -5,7 +5,7 @@ import factory
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, event
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.main import app
@@ -32,20 +32,27 @@ class UserFactory(factory.Factory):
 # FIXTURE: Sessão de teste
 # -----------------------------
 @pytest.fixture
-def session():
+def session(monkeypatch):
+    from app.db import database
+
     engine = create_engine(
         "sqlite:///:memory:",
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
 
-    # Usa Base.metadata no lugar de table_registry
-    Base.metadata.create_all(engine)
+    database.Base.metadata.create_all(engine)
+
+    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+    monkeypatch.setattr(database, "SessionLocal", TestingSessionLocal)
+    monkeypatch.setattr(database, "engine", engine)
 
     with Session(engine) as session:
         yield session
 
-    Base.metadata.drop_all(engine)
+    database.Base.metadata.drop_all(engine)
+
 
 
 # -----------------------------
@@ -119,8 +126,12 @@ def other_user(session):
 @pytest.fixture
 def token(client, user):
     response = client.post(
-        "api/auth/login",
-        data={"username": user.email, "password": user.clean_password},
+        "/api/auth/login",
+        data={
+            "username": user.email,
+            "password": user.clean_password,
+        },
     )
+    assert response.status_code == 200, response.text
     data = response.json()
     return data.get("access_token")

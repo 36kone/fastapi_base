@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ProductSchema(BaseModel):
@@ -38,3 +38,5 @@ class ProductResponse(ProductSchema):
     created_at: datetime
     updated_at: Optional[datetime] = None
     deleted_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True)

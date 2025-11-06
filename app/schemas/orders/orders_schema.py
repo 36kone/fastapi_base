@@ -2,13 +2,15 @@ from datetime import datetime
 from typing import Optional, List
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
+from app.schemas.orders.order_items_schema import OrderItemResponse
 
 
 class OrderSchema(BaseModel):
     id: UUID
     user_id: UUID
-    description: str
+    description: Optional[str] = None
     amount: float
 
 
@@ -30,7 +32,9 @@ class UpdateOrder(BaseModel):
 
 
 class OrderResponse(OrderSchema):
-    order_items: List[CreateOrderItem]
+    order_items: List[OrderItemResponse] = []
     created_at: datetime
     updated_at: Optional[datetime] = None
     deleted_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True)

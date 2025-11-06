@@ -25,6 +25,7 @@ def create_user(
     except Exception as e:
         raise e
 
+
 @user_router.get("/", status_code=200, response_model=list[UserResponse])
 def read_users(current_user: User = Depends(get_auth_user)):
     try:
