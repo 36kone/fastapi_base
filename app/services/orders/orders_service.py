@@ -19,7 +19,7 @@ class OrderService:
         self.order_item_service = OrderItemService(self.session)
         self.product_service = ProductService(self.session)
 
-    def create(self, order: CreateOrder, user: User) -> Order:
+    async def create(self, order: CreateOrder, user: User) -> Order:
         data_dict = order.model_dump(exclude_unset=True, exclude={"order_items"})
         entity = Order(**data_dict)
 
@@ -34,7 +34,7 @@ class OrderService:
             ensure_400(product.quantity == 0, "Insufficient product stock")
             product.quantity -= items.quantity
             items.order_id = entity.id
-            self.order_item_service.create(items)
+            await self.order_item_service.create(items)
             amount += product.price * items.quantity
 
         entity.amount = amount
@@ -42,20 +42,20 @@ class OrderService:
         self.session.refresh(entity)
         return entity
 
-    def read(self):
+    async def read(self):
         return self.crud_service.read()
 
-    def get_by_id(self, id_: UUID) -> Order:
+    async def get_by_id(self, id_: UUID) -> Order:
         return self.crud_service.get_by_id(id_)
 
-    def get_by_user_id(self, user_id: UUID):
+    async def get_by_user_id(self, user_id: UUID):
         return ensure_or_404(
             self.session.scalars(select(Order).where(Order.user_id == user_id)).all(),
             "User orders not found",
         )
 
-    def update(self, id_: UUID, order: UpdateOrder) -> Order:
+    async def update(self, id_: UUID, order: UpdateOrder) -> Order:
         return self.crud_service.update(id_, order)
 
-    def delete(self, id_: UUID) -> Order:
+    async def delete(self, id_: UUID) -> Order:
         return self.crud_service.soft_delete(id_)
