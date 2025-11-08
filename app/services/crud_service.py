@@ -17,7 +17,7 @@ class CrudService:
         self.model_class = model_class
         self.session = session
 
-    def create(self, schema: SchemaType) -> ModelType:
+    def create_entity(self, schema: SchemaType) -> ModelType:
         data_dict = schema.model_dump(exclude_unset=True)
         entity = self.model_class(**data_dict)
         self.session.add(entity)
@@ -25,14 +25,14 @@ class CrudService:
         self.session.refresh(entity)
         return entity
 
-    def read(self):
+    def read_entities(self):
         return self.session.scalars(
             select(self.model_class)
             .where(self.model_class.deleted_at.is_(None))
             .limit(100)
         ).all()
 
-    def get_by_id(self, id_: UUID) -> ModelType | None:
+    def get_entity_by_id(self, id_: UUID) -> ModelType | None:
         return ensure_or_404(
             self.session.scalar(
                 select(self.model_class).where(
@@ -43,8 +43,8 @@ class CrudService:
             "Entity not found",
         )
 
-    def update(self, id_: UUID, data: SchemaType) -> ModelType:
-        entity = self.get_by_id(id_)
+    def update_entity(self, id_: UUID, data: SchemaType) -> ModelType:
+        entity = self.get_entity_by_id(id_)
         try:
             for key, value in data.model_dump(exclude_unset=True).items():
                 setattr(entity, key, value)
@@ -55,14 +55,14 @@ class CrudService:
             self.session.rollback()
             raise e
 
-    def hard_delete(self, id_: UUID):
-        entity = self.get_by_id(id_)
+    def hard_delete_entity(self, id_: UUID):
+        entity = self.get_entity_by_id(id_)
         self.session.delete(entity)
         self.session.commit()
         return {"message": "Entity deleted"}
 
-    def soft_delete(self, id_: UUID):
-        entity = self.get_by_id(id_)
+    def soft_delete_entity(self, id_: UUID):
+        entity = self.get_entity_by_id(id_)
         entity.deleted_at = datetime.now(UTC)
         self.session.add(entity)
         self.session.commit()

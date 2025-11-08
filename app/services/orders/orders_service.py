@@ -12,10 +12,10 @@ from app.services.orders.order_items_service import OrderItemService
 from app.services.products.product_service import ProductService
 
 
-class OrderService:
+class OrderService(CrudService):
     def __init__(self, session: Session):
         self.session = session
-        self.crud_service = CrudService(Order, self.session)
+        super().__init__(Order, self.session)
         self.order_item_service = OrderItemService(self.session)
         self.product_service = ProductService(self.session)
 
@@ -43,10 +43,10 @@ class OrderService:
         return entity
 
     async def read(self):
-        return self.crud_service.read()
+        return self.read_entities()
 
     async def get_by_id(self, id_: UUID) -> Order:
-        return self.crud_service.get_by_id(id_)
+        return self.get_entity_by_id(id_)
 
     async def get_by_user_id(self, user_id: UUID):
         return ensure_or_404(
@@ -55,7 +55,7 @@ class OrderService:
         )
 
     async def update(self, id_: UUID, order: UpdateOrder) -> Order:
-        return self.crud_service.update(id_, order)
+        return self.update_entity(id_, order)
 
     async def delete(self, id_: UUID) -> Order:
-        return self.crud_service.soft_delete(id_)
+        return self.soft_delete_entity(id_)

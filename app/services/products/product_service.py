@@ -7,22 +7,22 @@ from app.schemas import CreateProduct, UpdateProduct
 from app.services.crud_service import CrudService
 
 
-class ProductService:
+class ProductService(CrudService):
     def __init__(self, session: Session):
         self.session = session
-        self.crud_service = CrudService(Product, self.session)
+        super().__init__(Product, self.session)
 
     def create(self, product: CreateProduct) -> Product:
-        return self.crud_service.create(product)
+        return self.create_entity(product)
 
     def read(self):
-        return self.crud_service.read()
+        return self.read_entities()
 
     def get_by_id(self, id_: UUID) -> Product:
-        return self.crud_service.get_by_id(id_)
+        return self.get_entity_by_id(id_)
 
     def update(self, product: UpdateProduct) -> Product:
-        return self.crud_service.update(product.id, product)
+        return self.update_entity(product.id, product)
 
     def delete(self, id_: UUID) -> Product:
-        return self.crud_service.soft_delete(id_)
+        return self.soft_delete_entity(id_)

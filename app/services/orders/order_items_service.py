@@ -7,22 +7,22 @@ from app.schemas import CreateOrderItem, UpdateOrderItem
 from app.services.crud_service import CrudService
 
 
-class OrderItemService:
+class OrderItemService(CrudService):
     def __init__(self, session: Session):
         self.session = session
-        self.crud_service = CrudService(OrderItem, self.session)
+        super().__init__(CreateOrderItem, self.session)
 
     async def create(self, order_items: CreateOrderItem) -> OrderItem:
-        return self.crud_service.create(order_items)
+        return self.create_entity(order_items)
 
     async def read(self):
-        return self.crud_service.read()
+        return self.read_entities()
 
     async def get_by_id(self, id_: UUID) -> OrderItem:
-        return self.crud_service.get_by_id(id_)
+        return self.get_entity_by_id(id_)
 
     async def update(self, id_: UUID, order_item: UpdateOrderItem) -> OrderItem:
-        return self.crud_service.update(id_, order_item)
+        return self.update_entity(id_, order_item)
 
     async def delete(self, id_: UUID) -> OrderItem:
-        return self.crud_service.soft_delete(id_)
+        return self.soft_delete_entity(id_)

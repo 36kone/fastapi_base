@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
-from app.controller.auth.auth import auth_router
-from app.controller.user.user import user_router
-from app.controller.products.products import product_router
-from app.controller.orders.orders import orders_router
-from app.controller.orders.order_items import order_item_router
+from app.controller.auth.auth_controller import auth_router
+from app.controller.user.user_controller import user_router
+from app.controller.products.products_controller import product_router
+from app.controller.orders.orders_controller import orders_router
+from app.controller.orders.order_items_controller import order_item_router
 
 api_router = APIRouter()
 

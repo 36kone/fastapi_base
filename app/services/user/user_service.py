@@ -10,10 +10,10 @@ from app.schemas import CreateUser, UpdateUser, MessageSchema
 from app.services.crud_service import CrudService
 
 
-class UserService:
+class UserService(CrudService):
     def __init__(self, session: Session):
         self.session = session
-        self.crud_service = CrudService(User, self.session)
+        super().__init__(User, self.session)
 
     def create(self, user: CreateUser) -> User:
         self.__validate_user_creation(user)
@@ -31,10 +31,10 @@ class UserService:
         return entity
 
     def read(self) -> list[User]:
-        return self.crud_service.read()
+        return self.read_entities()
 
     def get_by_id(self, user_id: UUID) -> User:
-        return self.crud_service.get_by_id(user_id)
+        return self.get_entity_by_id(user_id)
 
     def get_by_email(self, email: str) -> User:
         return ensure_or_404(
@@ -43,10 +43,10 @@ class UserService:
         )
 
     def update(self, data: UpdateUser) -> User:
-        return self.crud_service.update(data.id, data)
+        return self.update_entity(data.id, data)
 
     def delete(self, user_id: UUID) -> MessageSchema:
-        return self.crud_service.soft_delete(user_id)
+        return self.soft_delete_entity(user_id)
 
     def __validate_user_creation(self, user: CreateUser):
         ensure_or_400(user.email, "Email is required")
