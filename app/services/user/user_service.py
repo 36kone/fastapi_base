@@ -42,6 +42,16 @@ class UserService(CrudService):
             "User not found",
         )
 
+    async def search(self, keyword: str, size: int, page: int):
+        query = self.session.query(User).filter(User.deleted_at.is_(None))
+
+        if keyword:
+            query = query.filter(User.name.ilike(f"%{keyword}%"))
+
+        total = query.count()
+        items = query.offset((page - 1) * size).limit(size).all()
+        return items, total
+
     def update(self, data: UpdateUser) -> User:
         return self.update_entity(data.id, data)
 

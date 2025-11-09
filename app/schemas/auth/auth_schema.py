@@ -2,19 +2,20 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
+from app.schemas.base import BaseSchema
 from app.schemas.users.user_schema import UserResponse
 
 
-class PasswordResetRequest(BaseModel):
+class PasswordResetRequest(BaseSchema):
     email: EmailStr
 
 
-class PasswordResetConfirm(BaseModel):
+class PasswordResetConfirm(BaseSchema):
     new_password: str
     access_token: str
 
 
-class ChangePasswordRequest(BaseModel):
+class ChangePasswordRequest(BaseSchema):
     current_password: str
     new_password: str
 

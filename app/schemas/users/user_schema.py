@@ -2,10 +2,12 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import EmailStr, ConfigDict
+
+from app.schemas.base import BaseSchema
 
 
-class UserSchema(BaseModel):
+class UserSchema(BaseSchema):
     id: UUID
     name: str
     email: EmailStr
@@ -17,7 +19,7 @@ class UserSchema(BaseModel):
     is_active: bool
 
 
-class CreateUser(BaseModel):
+class CreateUser(BaseSchema):
     name: str
     email: EmailStr
     phone: str
@@ -26,7 +28,7 @@ class CreateUser(BaseModel):
     is_active: bool
 
 
-class UpdateUser(BaseModel):
+class UpdateUser(BaseSchema):
     id: UUID
     name: Optional[str] = None
     email: Optional[EmailStr] = None
@@ -37,7 +39,7 @@ class UpdateUser(BaseModel):
     is_active: Optional[bool] = None
 
 
-class UserResponse(BaseModel):
+class UserResponse(BaseSchema):
     id: UUID
     name: str
     email: EmailStr
@@ -52,3 +54,9 @@ class UserResponse(BaseModel):
     deleted_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserSearchRequest(BaseSchema):
+    keyword: Optional[str] = None
+    size: int = 10
+    page: int = 1

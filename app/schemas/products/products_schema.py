@@ -4,8 +4,10 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
+from app.schemas.base import BaseSchema
 
-class ProductSchema(BaseModel):
+
+class ProductSchema(BaseSchema):
     id: UUID
     code: str
     name: str
@@ -15,7 +17,7 @@ class ProductSchema(BaseModel):
     quantity: int
 
 
-class CreateProduct(BaseModel):
+class CreateProduct(BaseSchema):
     code: str
     name: str
     unit: str
@@ -24,7 +26,7 @@ class CreateProduct(BaseModel):
     quantity: int
 
 
-class UpdateProduct(BaseModel):
+class UpdateProduct(BaseSchema):
     id: UUID
     code: Optional[str] = None
     name: Optional[str] = None
@@ -40,3 +42,9 @@ class ProductResponse(ProductSchema):
     deleted_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ProductSearchRequest(BaseSchema):
+    keyword: Optional[str] = None
+    size: int = 10
+    page: int = 1

@@ -4,32 +4,34 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
+from app.schemas.base import BaseSchema
 
-class OrderSchema(BaseModel):
+
+class OrderSchema(BaseSchema):
     id: UUID
     user_id: UUID
     description: Optional[str] = None
     amount: float
 
 
-class CreateOrderItem(BaseModel):
+class CreateOrderItem(BaseSchema):
     order_id: Optional[UUID] = None
     product_id: UUID
     quantity: int
 
 
-class CreateOrder(BaseModel):
+class CreateOrder(BaseSchema):
     description: str
     order_items: List[CreateOrderItem]
 
 
-class UpdateOrder(BaseModel):
+class UpdateOrder(BaseSchema):
     id: UUID
     description: Optional[str] = None
     amount: Optional[float] = None
 
 
-class OrderItem(BaseModel):
+class OrderItem(BaseSchema):
     id: UUID
     product_id: UUID
     quantity: float
