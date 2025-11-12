@@ -22,7 +22,9 @@ async def create_order_item(
 ):
     try:
         with get_db() as db:
-            return await OrderItemService(db).create(data)
+            service = OrderItemService(db)
+
+            return await service.create(data)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -35,7 +37,9 @@ async def read_order_items(
 ):
     try:
         with get_db() as db:
-            return await OrderItemService(db).read()
+            service = OrderItemService(db)
+
+            return await service.read()
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -49,7 +53,9 @@ async def get_order_item_by_id(
 ):
     try:
         with get_db() as db:
-            return await OrderItemService(db).get_by_id(id_)
+            service = OrderItemService(db)
+
+            return await service.get_by_id(id_)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -64,7 +70,9 @@ async def update_order_item(
 ):
     try:
         with get_db() as db:
-            return await OrderItemService(db).update(id_, data)
+            service = OrderItemService(db)
+
+            return await service.update(id_, data)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -78,7 +86,9 @@ async def delete_order_item(
 ):
     try:
         with get_db() as db:
-            return await OrderItemService(db).delete(id_)
+            service = OrderItemService(db)
+
+            return await service.delete(id_)
     except HTTPException as exc:
         raise exc
     except Exception as e:

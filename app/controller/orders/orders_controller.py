@@ -18,7 +18,9 @@ async def create_order(
 ):
     try:
         with get_db() as db:
-            return await OrderService(db).create(data, current_user)
+            service = OrderService(db)
+
+            return await service.create(data, current_user)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -29,7 +31,9 @@ async def create_order(
 async def read_orders(current_user: User = Depends(get_auth_user)):
     try:
         with get_db() as db:
-            return await OrderService(db).read()
+            service = OrderService(db)
+
+            return await service.read()
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -43,7 +47,9 @@ async def get_order_by_id(
 ):
     try:
         with get_db() as db:
-            return await OrderService(db).get_by_id(id_)
+            service = OrderService(db)
+
+            return await service.get_by_id(id_)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -59,7 +65,9 @@ async def get_orders_by_user_id(
 ):
     try:
         with get_db() as db:
-            return await OrderService(db).get_by_user_id(user_id)
+            service = OrderService(db)
+
+            return await service.get_by_user_id(user_id)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -74,7 +82,9 @@ async def update_order(
 ):
     try:
         with get_db() as db:
-            return await OrderService(db).update(id_, data)
+            service = OrderService(db)
+
+            return await service.update(id_, data)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -88,7 +98,9 @@ async def delete_order(
 ):
     try:
         with get_db() as db:
-            return await OrderService(db).delete(id_)
+            service = OrderService(db)
+
+            return await service.delete(id_)
     except HTTPException as exc:
         raise exc
     except Exception as e:

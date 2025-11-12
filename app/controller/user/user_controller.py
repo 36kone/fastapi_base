@@ -19,7 +19,9 @@ def create_user(
 ):
     try:
         with get_db() as db:
-            return UserService(db).create(data)
+            service = UserService(db)
+
+            return service.create(data)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -30,7 +32,9 @@ def create_user(
 def read_users(current_user: User = Depends(get_auth_user)):
     try:
         with get_db() as db:
-            return UserService(db).read()
+            service = UserService(db)
+
+            return service.read()
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -44,7 +48,9 @@ def get_user_by_id(
 ):
     try:
         with get_db() as db:
-            return UserService(db).get_by_id(id_)
+            service = UserService(db)
+
+            return service.get_by_id(id_)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -58,7 +64,9 @@ def get_user_by_email(
 ):
     try:
         with get_db() as db:
-            return UserService(db).get_by_email(email)
+            service = UserService(db)
+
+            return service.get_by_email(email)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -74,7 +82,9 @@ async def search_users(
 ):
     try:
         with get_db() as db:
-            items, total = await UserService(db).search(
+            service = UserService(db)
+
+            items, total = await service.search(
                 keyword=search_request.keyword,
                 size=search_request.size,
                 page=search_request.page,
@@ -102,7 +112,9 @@ def update_user(
 ):
     try:
         with get_db() as db:
-            return UserService(db).update(data)
+            service = UserService(db)
+
+            return service.update(data)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -116,7 +128,9 @@ def delete_user(
 ):
     try:
         with get_db() as db:
-            return UserService(db).delete(id_)
+            service = UserService(db)
+
+            return service.delete(id_)
     except HTTPException as exc:
         raise exc
     except Exception as e:

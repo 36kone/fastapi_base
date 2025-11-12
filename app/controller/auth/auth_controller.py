@@ -15,7 +15,9 @@ auth_router = APIRouter()
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
     try:
         with get_db() as db:
-            return AuthService(db).login(form_data)
+            service = AuthService(db)
+
+            return service.login(form_data)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -26,7 +28,9 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
 def read_current_user(current_user: User = Depends(get_auth_user)):
     try:
         with get_db() as db:
-            return UserService(db).get_by_id(current_user.id)
+            user_service = UserService(db)
+
+            return user_service.get_by_id(current_user.id)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -39,7 +43,9 @@ def change_password(
 ):
     try:
         with get_db() as db:
-            return AuthService(db).change_password(data, current_user.id)
+            service = AuthService(db)
+
+            return service.change_password(data, current_user.id)
     except HTTPException as exc:
         raise exc
     except Exception as e:

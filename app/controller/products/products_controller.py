@@ -19,7 +19,9 @@ def create_product(
 ):
     try:
         with get_db() as db:
-            return ProductService(db).create(data)
+            service = ProductService(db)
+
+            return service.create(data)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -30,7 +32,9 @@ def create_product(
 def read_products(current_user: User = Depends(get_auth_user)):
     try:
         with get_db() as db:
-            return ProductService(db).read()
+            service = ProductService(db)
+
+            return service.read()
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -44,7 +48,9 @@ def get_product_by_id(
 ):
     try:
         with get_db() as db:
-            return ProductService(db).get_by_id(id_)
+            service = ProductService(db)
+
+            return service.get_by_id(id_)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -60,7 +66,9 @@ async def search_products(
 ):
     try:
         with get_db() as db:
-            items, total = await ProductService(db).search(
+            service = ProductService(db)
+
+            items, total = await service.search(
                 keyword=search_request.keyword,
                 size=search_request.size,
                 page=search_request.page,
@@ -88,7 +96,9 @@ def update_product(
 ):
     try:
         with get_db() as db:
-            return ProductService(db).update(data)
+            service = ProductService(db)
+
+            return service.update(data)
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -102,7 +112,9 @@ def delete_product(
 ):
     try:
         with get_db() as db:
-            return ProductService(db).delete(id_)
+            service = ProductService(db)
+
+            return service.delete(id_)
     except HTTPException as exc:
         raise exc
     except Exception as e:
