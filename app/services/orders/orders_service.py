@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.dependencies.exception_utils import ensure_400, ensure_or_404
 from app.models import Order
@@ -46,7 +46,21 @@ class OrderService(CrudService):
         return self.read_entities()
 
     async def get_by_id(self, id_: UUID) -> Order:
-        return self.get_entity_by_id(id_)
+        # return self.get_entity_by_id(id_)
+
+        return ensure_or_404(
+            self.session.scalar(
+                select(Order)
+                .options(
+                    joinedload(Order.order_items)
+                )
+                .where(
+                    Order.id == id_,
+                    Order.deleted_at.is_(None),
+                )
+            ),
+            "Entity not found",
+        )
 
     async def get_by_user_id(self, user_id: UUID):
         return ensure_or_404(

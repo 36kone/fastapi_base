@@ -10,7 +10,7 @@ from app.services.crud_service import CrudService
 class OrderItemService(CrudService):
     def __init__(self, session: Session):
         self.session = session
-        super().__init__(CreateOrderItem, self.session)
+        super().__init__(OrderItem, self.session)
 
     async def create(self, order_items: CreateOrderItem) -> OrderItem:
         return self.create_entity(order_items)
