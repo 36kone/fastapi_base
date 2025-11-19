@@ -18,7 +18,8 @@ Ideal para iniciar rapidamente projetos de backend modernos com padrões profiss
 - **Python-Jose + Passlib** — Autenticação JWT e hash de senhas  
 - **Docker + Docker Compose** — Containerização e ambiente isolado  
 - **Pydantic** — Validação de dados  
-- **FastAPI-Mail** — Envio de e-mails com templates Jinja2  
+- **FastAPI-Mail** — Envio de e-mails com templates Jinja2
+- **Pytest** — Testes unitários
 
 ---
 
@@ -144,7 +145,8 @@ It includes **JWT authentication**, **PostgreSQL** integration, and a clean arch
 - **Python-Jose + Passlib** — JWT authentication  
 - **Docker + Docker Compose** — Containerized setup  
 - **Pydantic** — Data validation  
-- **FastAPI-Mail** — Email sending with Jinja2 templates  
+- **FastAPI-Mail** — Email sending with Jinja2 templates
+- **Pytest** — Unit tests
 
 ---
 
