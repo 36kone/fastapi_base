@@ -61,6 +61,8 @@ from .enum_types.enum_types_schema import (
     EnumTypesResponse,
 )
 
+from .email_sender.email_sender_schema import SendEmailRequest
+
 __all__ = [
     "PaginatedResponse",
     "Pagination",
@@ -103,4 +105,5 @@ __all__ = [
     "EnumTypesSchema",
     "EnumTypesUpdate",
     "EnumTypesResponse",
+    "SendEmailRequest"
 ]
