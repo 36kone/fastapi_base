@@ -45,6 +45,16 @@ from .orders.order_items_schema import (
 
 from .pagination import Pagination
 
+from .config_table.config_table_schema import (
+    ConfigTableSchema,
+    ConfigTableResponse,
+    CreateConfigTable,
+    ConfigTableSearchRequest,
+    UpdateConfigTable,
+    ConfigTableValueResponse,
+    ConfigTableGetValuesRequest,
+)
+
 __all__ = [
     "PaginatedResponse",
     "Pagination",
@@ -77,4 +87,11 @@ __all__ = [
     "OrderItemResponse",
     "CreateOrderItem",
     "UpdateOrderItem",
+    "ConfigTableSchema",
+    "ConfigTableResponse",
+    "CreateConfigTable",
+    "ConfigTableSearchRequest",
+    "UpdateConfigTable",
+    "ConfigTableValueResponse",
+    "ConfigTableGetValuesRequest",
 ]
