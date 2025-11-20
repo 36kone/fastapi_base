@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from pydantic import BaseModel
 
-from app.dependencies.exception_utils import ensure_or_404
+from app.dependencies.exception_utils import ensure_or_404, ensure_400
 
 ModelType = TypeVar("ModelType")
 SchemaType = TypeVar("SchemaType", bound=BaseModel)
@@ -50,6 +50,7 @@ class CrudService:
             return entity
         except Exception as e:
             self.session.rollback()
+            ensure_400(True, f"Entity update failed: {e}")
             raise e
 
     def hard_delete_entity(self, id_: UUID):
@@ -60,6 +61,7 @@ class CrudService:
 
     def soft_delete_entity(self, id_: UUID):
         entity = self.get_entity_by_id(id_)
+        ensure_400(entity.deleted_at is not None, "Entity already deleted")
         entity.deleted_at = datetime.now(UTC)
         self.session.add(entity)
         self.session.commit()

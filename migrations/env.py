@@ -3,8 +3,8 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 from dotenv import load_dotenv
-from db.database import Base
-import models  # noqa: F401
+from app.db.database import Base
+import app.models  # noqa: F401
 
 
 # Carregar variáveis de ambiente do arquivo .env
