@@ -90,7 +90,7 @@ password=qazwsx
 
 ### Registro
 ```http
-POST /users/register
+POST /auth/register
 ```
 **JSON Body:**
 ```json
@@ -215,7 +215,7 @@ password=qazwsx
 
 ### Register
 ```http
-POST /users/register
+POST /auth/register
 ```
 **JSON:**
 ```json
