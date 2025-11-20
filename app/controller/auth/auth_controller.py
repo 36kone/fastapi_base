@@ -4,7 +4,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.db.database import get_db
 from app.dependencies.authentication import get_auth_user
 from app.models import User
-from app.schemas import Token, UserResponse, ChangePasswordRequest, MessageSchema
+from app.schemas import Token, UserResponse, ChangePasswordRequest, MessageSchema, RegisterUser
+from app.schemas.users.user_schema import CreateUser
 from app.services.auth.auth_service import AuthService
 from app.services.user.user_service import UserService
 
@@ -46,6 +47,21 @@ def change_password(
             service = AuthService(db)
 
             return service.change_password(data, current_user.id)
+    except HTTPException as exc:
+        raise exc
+    except Exception as e:
+        raise e
+
+
+@auth_router.post("/register", status_code=201, response_model=UserResponse)
+def register(
+    data: RegisterUser,
+):
+    try:
+        with get_db() as db:
+            service = UserService(db)
+
+            return service.create(CreateUser.model_validate(data))
     except HTTPException as exc:
         raise exc
     except Exception as e:

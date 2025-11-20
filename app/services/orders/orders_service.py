@@ -1,12 +1,12 @@
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import select, func, or_
 from sqlalchemy.orm import Session
 
 from app.dependencies.exception_utils import ensure_400, ensure_or_404
 from app.models import Order
 from app.models import User
-from app.schemas import CreateOrder, UpdateOrder
+from app.schemas import CreateOrder, UpdateOrder, OrderSearchRequest
 from app.services.crud_service import CrudService
 from app.services.orders.order_items_service import OrderItemService
 from app.services.products.product_service import ProductService
@@ -39,14 +39,45 @@ class OrderService(CrudService):
 
         entity.amount = amount
         self.session.commit()
-        self.session.refresh(entity)
-        return entity
+        return self.get_entity_by_id(entity.id)
 
     async def read(self):
         return self.read_entities()
 
     async def get_by_id(self, id_: UUID) -> Order:
         return self.get_entity_by_id(id_)
+
+    async def search(self, filters: OrderSearchRequest):
+        offset = (filters.page - 1) * filters.size
+        query = select(Order).where(Order.deleted_at.is_(None))
+
+        if filters.user_id or filters.amount is not None:
+            conditions = []
+            if filters.user_id:
+                conditions.append(Order.user_id == filters.user_id)
+            if filters.amount is not None:
+                conditions.append(Order.amount == filters.amount)
+            query = query.where(or_(*conditions))
+
+        count_stmt = (
+            select(func.count(Order.id))
+            .select_from(Order)
+            .where(Order.deleted_at.is_(None))
+        )
+
+        if filters.user_id or filters.amount is not None:
+            conditions = []
+            if filters.user_id:
+                conditions.append(Order.user_id == filters.user_id)
+            if filters.amount is not None:
+                conditions.append(Order.amount == filters.amount)
+            count_stmt = count_stmt.where(or_(*conditions))
+
+        total = self.session.scalar(count_stmt)
+
+        stmt = query.limit(filters.size).offset(offset)
+        items = self.session.scalars(stmt).all()
+        return items, total
 
     async def get_by_user_id(self, user_id: UUID):
         return ensure_or_404(

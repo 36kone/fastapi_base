@@ -5,7 +5,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.db.database import get_db
 from app.dependencies.authentication import get_auth_user
 from app.models import User
-from app.schemas import OrderResponse, CreateOrder, UpdateOrder, MessageSchema
+from app.schemas import (
+    OrderResponse,
+    CreateOrder,
+    UpdateOrder,
+    MessageSchema,
+    PaginatedResponse,
+    OrderSearchRequest,
+)
 from app.services.orders.orders_service import OrderService
 
 orders_router = APIRouter()
@@ -68,6 +75,33 @@ async def get_orders_by_user_id(
             service = OrderService(db)
 
             return await service.get_by_user_id(user_id)
+    except HTTPException as exc:
+        raise exc
+    except Exception as e:
+        raise e
+
+
+@orders_router.post(
+    "/search", status_code=200, response_model=PaginatedResponse[OrderResponse]
+)
+async def search_orders(
+    search_request: OrderSearchRequest,
+    current_user: User = Depends(get_auth_user),
+):
+    try:
+        with get_db() as db:
+            service = OrderService(db)
+
+            items, total = await service.search(filters=search_request)
+
+            return PaginatedResponse.create(
+                total=total,
+                page=search_request.page,
+                size=search_request.size,
+                items=[
+                    OrderResponse.model_validate(i, from_attributes=True) for i in items
+                ],
+            )
     except HTTPException as exc:
         raise exc
     except Exception as e:

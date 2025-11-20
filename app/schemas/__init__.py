@@ -17,6 +17,7 @@ from .auth.auth_schema import (
     PasswordResetConfirm,
     ChangePasswordRequest,
     Token,
+    RegisterUser
 )
 
 from .products.products_schema import (
@@ -27,7 +28,13 @@ from .products.products_schema import (
     ProductSearchRequest,
 )
 
-from .orders.orders_schema import OrderSchema, OrderResponse, CreateOrder, UpdateOrder
+from .orders.orders_schema import (
+    OrderSchema,
+    OrderResponse,
+    CreateOrder,
+    UpdateOrder,
+    OrderSearchRequest,
+)
 
 from .orders.order_items_schema import (
     OrderItemSchema,
@@ -54,6 +61,7 @@ __all__ = [
     "PasswordResetConfirm",
     "ChangePasswordRequest",
     "Token",
+    "RegisterUser",
     "ProductSchema",
     "ProductResponse",
     "UpdateProduct",
@@ -63,6 +71,7 @@ __all__ = [
     "OrderResponse",
     "CreateOrder",
     "UpdateOrder",
+    "OrderSearchRequest",
     "OrderItemSchema",
     "OrderItemResponse",
     "CreateOrderItem",

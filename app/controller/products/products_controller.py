@@ -84,7 +84,10 @@ async def search_products(
                 total=total,
                 page=search_request.page,
                 size=search_request.size,
-                items=[ProductResponse.model_validate(item) for item in items],
+                items=[
+                    ProductResponse.model_validate(i, from_attributes=True)
+                    for i in items
+                ],
             )
     except HTTPException as exc:
         raise exc

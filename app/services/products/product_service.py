@@ -2,7 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from sqlalchemy import or_
+from sqlalchemy import or_, select, func
 
 from app.models import Product
 from app.schemas import CreateProduct, UpdateProduct
@@ -24,19 +24,39 @@ class ProductService(CrudService):
         return self.get_entity_by_id(id_)
 
     async def search(self, keyword: str, size: int, page: int):
-        query = self.session.query(Product).filter(Product.deleted_at.is_(None))
+        offset = (page - 1) * size
+        query = select(Product).where(Product.deleted_at.is_(None))
 
         if keyword:
-            query = query.filter(
+            pattern = f"%{keyword}%"
+            query = query.where(
                 or_(
-                    Product.name.ilike(f"%{keyword}%"),
-                    Product.code.ilike(f"%{keyword}%"),
-                    Product.price.ilike(f"%{keyword}%"),
+                    Product.name.ilike(pattern),
+                    Product.code.ilike(pattern),
+                    Product.price.ilike(pattern),
                 )
             )
 
-        total = query.count()
-        items = query.offset((page - 1) * size).limit(size).all()
+        count_stmt = (
+            select(func.count(Product.id))
+            .select_from(Product)
+            .where(Product.deleted_at.is_(None))
+        )
+
+        if keyword:
+            pattern = f"%{keyword}%"
+            count_stmt = count_stmt.where(
+                or_(
+                    Product.name.ilike(pattern),
+                    Product.code.ilike(pattern),
+                    Product.price.ilike(pattern),
+                )
+            )
+
+        total = self.session.scalar(count_stmt)
+
+        stmt = query.limit(size).offset(offset)
+        items = self.session.scalars(stmt).all()
         return items, total
 
     def update(self, product: UpdateProduct) -> Product:

@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from app.core.security import get_password_hash
@@ -22,13 +22,12 @@ class UserService(CrudService):
             email=str(user.email),
             password=get_password_hash(user.password),
             phone=str(user.phone),
-            role=user.role,
-            is_active=user.is_active,
+            role=user.role if user.role else "user",
+            is_active=True,
         )
         self.session.add(entity)
         self.session.commit()
-        self.session.refresh(entity)
-        return entity
+        return self.get_entity_by_id(entity.id)
 
     def read(self) -> list[User]:
         return self.read_entities()
@@ -43,13 +42,25 @@ class UserService(CrudService):
         )
 
     async def search(self, keyword: str, size: int, page: int):
-        query = self.session.query(User).filter(User.deleted_at.is_(None))
+        query = select(User).where(User.deleted_at.is_(None))
+        offset = (page - 1) * size
 
         if keyword:
-            query = query.filter(User.name.ilike(f"%{keyword}%"))
+            query = query.where(User.name.ilike(f"%{keyword}%"))
 
-        total = query.count()
-        items = query.offset((page - 1) * size).limit(size).all()
+        count_stmt = (
+            select(func.count(User.id))
+            .select_from(User)
+            .where(User.deleted_at.is_(None))
+        )
+
+        if keyword:
+            count_stmt = count_stmt.where(User.name.ilike(f"%{keyword}%"))
+
+        total = self.session.scalar(count_stmt)
+
+        stmt = query.limit(size).offset(offset)
+        items = self.session.scalars(stmt).all()
         return items, total
 
     def update(self, data: UpdateUser) -> User:
@@ -61,17 +72,10 @@ class UserService(CrudService):
     def __validate_user_creation(self, user: CreateUser):
         ensure_or_400(user.email, "Email is required")
         ensure_or_400(user.phone, "Phone is required")
-        if user.email:
-            exists_email = self.session.scalar(
-                select(User.id).where(
-                    User.email == user.email,
-                )
-            )
-            ensure_or_400(not exists_email, "Email already registered")
-        if user.phone:
-            exists_phone = self.session.scalar(
-                select(User.id).where(
-                    User.phone == user.phone,
-                )
-            )
-            ensure_or_400(not exists_phone, "Phone already registered")
+
+        stmt = select(User.id).where(
+            (User.email == user.email) | (User.phone == user.phone)
+        )
+
+        exists = self.session.scalar(stmt)
+        ensure_or_400(not exists, "Email or phone already registered")

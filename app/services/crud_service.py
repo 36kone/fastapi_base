@@ -18,12 +18,10 @@ class CrudService:
         self.session = session
 
     def create_entity(self, schema: SchemaType) -> ModelType:
-        data_dict = schema.model_dump(exclude_unset=True)
-        entity = self.model_class(**data_dict)
+        entity = self.model_class(**schema.model_dump(exclude_unset=True))
         self.session.add(entity)
         self.session.commit()
-        self.session.refresh(entity)
-        return entity
+        return self.get_entity_by_id(entity.id)
 
     def read_entities(self):
         return self.session.scalars(
@@ -49,7 +47,6 @@ class CrudService:
             for key, value in data.model_dump(exclude_unset=True).items():
                 setattr(entity, key, value)
             self.session.commit()
-            self.session.refresh(entity)
             return entity
         except Exception as e:
             self.session.rollback()
@@ -66,5 +63,4 @@ class CrudService:
         entity.deleted_at = datetime.now(UTC)
         self.session.add(entity)
         self.session.commit()
-        self.session.refresh(entity)
         return {"message": "Entity deleted"}

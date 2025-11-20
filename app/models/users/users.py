@@ -1,6 +1,7 @@
 import uuid
 
 from sqlalchemy import Column, String, UUID, Boolean, DateTime, TIMESTAMP, func
+from sqlalchemy.orm import relationship
 
 from app.db.database import Base
 
@@ -20,3 +21,5 @@ class User(Base):
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, onupdate=func.now(), nullable=True)
     deleted_at = Column(TIMESTAMP, nullable=True)
+
+    order = relationship("Order", back_populates="user", lazy="selectin")

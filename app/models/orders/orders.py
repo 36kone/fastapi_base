@@ -21,3 +21,4 @@ class Order(Base):
     deleted_at = Column(DateTime, nullable=True)
 
     order_items = relationship("OrderItem", back_populates="order", lazy="selectin")
+    user = relationship("User", back_populates="order", lazy="selectin")

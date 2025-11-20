@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, List
 from uuid import UUID
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, EmailStr
 
 from app.schemas.base import BaseSchema
 
@@ -37,10 +37,26 @@ class OrderItem(BaseSchema):
     quantity: float
 
 
+class User(BaseSchema):
+    id: UUID
+    name: str
+    phone: str
+    email: EmailStr
+
+
 class OrderResponse(OrderSchema):
     order_items: List[OrderItem] = []
+    user: User
     created_at: datetime
     updated_at: Optional[datetime] = None
     deleted_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class OrderSearchRequest(BaseSchema):
+    keyword: Optional[str] = None
+    user_id: Optional[UUID] = None
+    amount: Optional[float] = None
+    size: int = 10
+    page: int = 1

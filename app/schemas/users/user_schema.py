@@ -23,9 +23,8 @@ class CreateUser(BaseSchema):
     name: str
     email: EmailStr
     phone: str
-    role: str
+    role: str = "user"
     password: str
-    is_active: bool
 
 
 class UpdateUser(BaseSchema):

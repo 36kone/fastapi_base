@@ -92,15 +92,17 @@ async def search_users(
 
             items, total = await service.search(
                 keyword=search_request.keyword,
-                size=search_request.size,
                 page=search_request.page,
+                size=search_request.size,
             )
 
             return PaginatedResponse.create(
                 total=total,
                 page=search_request.page,
                 size=search_request.size,
-                items=[UserResponse.model_validate(item) for item in items],
+                items=[
+                    UserResponse.model_validate(i, from_attributes=True) for i in items
+                ],
             )
     except HTTPException as exc:
         raise exc

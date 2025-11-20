@@ -24,3 +24,10 @@ class Token(BaseModel):
     access_token: str
     token_type: str
     user: Optional[UserResponse] = None
+
+
+class RegisterUser(BaseSchema):
+    name: str
+    email: EmailStr
+    phone: str
+    password: str
