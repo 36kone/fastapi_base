@@ -55,6 +55,12 @@ from .config_table.config_table_schema import (
     ConfigTableGetValuesRequest,
 )
 
+from .enum_types.enum_types_schema import (
+    EnumTypesSchema,
+    EnumTypesUpdate,
+    EnumTypesResponse,
+)
+
 __all__ = [
     "PaginatedResponse",
     "Pagination",
@@ -94,4 +100,7 @@ __all__ = [
     "UpdateConfigTable",
     "ConfigTableValueResponse",
     "ConfigTableGetValuesRequest",
+    "EnumTypesSchema",
+    "EnumTypesUpdate",
+    "EnumTypesResponse",
 ]

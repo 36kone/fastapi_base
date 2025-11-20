@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import ConfigDict
 
-from app.schemas import BaseSchema, TimestampedResponse
+from app.schemas import BaseSchema
 
 
 class ConfigTableSchema(BaseSchema):
@@ -23,7 +23,7 @@ class UpdateConfigTable(BaseSchema):
     value: Optional[str] = None
 
 
-class ConfigTableResponse(ConfigTableSchema, TimestampedResponse):
+class ConfigTableResponse(ConfigTableSchema):
     model_config = ConfigDict(from_attributes=True)
 
 

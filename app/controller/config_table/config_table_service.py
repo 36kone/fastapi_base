@@ -95,7 +95,10 @@ async def search_parameters(
             total=total,
             page=request.page,
             size=request.size,
-            items=[ConfigTableResponse.model_validate(i, from_attributes=True) for i in items],
+            items=[
+                ConfigTableResponse.model_validate(i, from_attributes=True)
+                for i in items
+            ],
         )
     except HTTPException as exc:
         logging.info(f"[SEARCH_CUSTOMERS] -> {exc}")
