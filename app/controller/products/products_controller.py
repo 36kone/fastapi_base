@@ -5,8 +5,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.db.database import get_db
 from app.dependencies.authentication import get_auth_user
 from app.models import User
-from app.schemas import CreateProduct, ProductResponse, UpdateProduct, MessageSchema, PaginatedResponse, \
-    ProductSearchRequest
+from app.schemas import (
+    CreateProduct,
+    ProductResponse,
+    UpdateProduct,
+    MessageSchema,
+    PaginatedResponse,
+    ProductSearchRequest,
+)
 from app.services.products.product_service import ProductService
 
 product_router = APIRouter()
@@ -61,8 +67,8 @@ def get_product_by_id(
     "/search", status_code=200, response_model=PaginatedResponse[ProductResponse]
 )
 async def search_products(
-        search_request: ProductSearchRequest,
-        current_user: User = Depends(get_auth_user),
+    search_request: ProductSearchRequest,
+    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:
@@ -78,10 +84,7 @@ async def search_products(
                 total=total,
                 page=search_request.page,
                 size=search_request.size,
-                items=[
-                    ProductResponse.model_validate(item)
-                    for item in items
-                ],
+                items=[ProductResponse.model_validate(item) for item in items],
             )
     except HTTPException as exc:
         raise exc

@@ -5,7 +5,7 @@ from .users.user_schema import (
     UpdateUser,
     UserResponse,
     CreateUser,
-    UserSearchRequest
+    UserSearchRequest,
 )
 
 from .pagination import PaginatedResponse
@@ -24,7 +24,7 @@ from .products.products_schema import (
     ProductResponse,
     UpdateProduct,
     CreateProduct,
-    ProductSearchRequest
+    ProductSearchRequest,
 )
 
 from .orders.orders_schema import OrderSchema, OrderResponse, CreateOrder, UpdateOrder
@@ -36,7 +36,7 @@ from .orders.order_items_schema import (
     UpdateOrderItem,
 )
 
-from .pagination import Pagination, PaginatedResponse
+from .pagination import Pagination
 
 __all__ = [
     "PaginatedResponse",
