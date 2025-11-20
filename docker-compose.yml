@@ -8,3 +8,13 @@ services:
       - "8000:8000"
     env_file:
       - .env
+
+  background:
+    container_name: ecommerce-service-background
+    build: .
+    environment:
+      - MODE=background
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
