@@ -5,6 +5,7 @@ from app.controller.user.user_controller import user_router
 from app.controller.products.products_controller import product_router
 from app.controller.orders.orders_controller import orders_router
 from app.controller.orders.order_items_controller import order_item_router
+from app.controller.upload.upload_controller import upload_router
 
 api_router = APIRouter()
 
@@ -16,3 +17,4 @@ api_router.include_router(orders_router, prefix="/orders", tags=["Orders"])
 api_router.include_router(
     order_item_router, prefix="/order-items", tags=["Order Items"]
 )
+api_router.include_router(upload_router, prefix="/upload", tags=["Upload"])

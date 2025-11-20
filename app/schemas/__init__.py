@@ -10,14 +10,14 @@ from .users.user_schema import (
 
 from .pagination import PaginatedResponse
 
-from .message_schema import MessageSchema
+from app.schemas.message.message_schema import MessageSchema, UploadMessage
 
 from .auth.auth_schema import (
     PasswordResetRequest,
     PasswordResetConfirm,
     ChangePasswordRequest,
     Token,
-    RegisterUser
+    RegisterUser,
 )
 
 from .products.products_schema import (
@@ -51,6 +51,7 @@ __all__ = [
     "BaseSchema",
     "TimestampedResponse",
     "MessageSchema",
+    "UploadMessage",
     "UserSchema",
     "UpdateUser",
     "UserResponse",
