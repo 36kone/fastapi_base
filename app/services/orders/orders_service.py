@@ -73,8 +73,7 @@ class OrderService(CrudService):
                 conditions.append(Order.amount == filters.amount)
             count_stmt = count_stmt.where(or_(*conditions))
 
-        total = self.session.scalar(count_stmt)
-
+        total: int = self.session.scalar(count_stmt)
         stmt = query.limit(filters.size).offset(offset)
         items = self.session.scalars(stmt).all()
         return items, total

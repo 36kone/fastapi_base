@@ -1,3 +1,6 @@
+import uuid
+from typing import cast
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -37,7 +40,7 @@ def read_current_user(current_user: User = Depends(get_auth_user)):
         with get_db() as db:
             user_service = UserService(db)
 
-            return user_service.get_by_id(current_user.id)
+            return user_service.get_by_id(cast(uuid.UUID, current_user.id))
     except HTTPException as exc:
         raise exc
     except Exception as e:
@@ -52,7 +55,7 @@ def change_password(
         with get_db() as db:
             service = AuthService(db)
 
-            return service.change_password(data, current_user.id)
+            return service.change_password(data, (cast(uuid.UUID, current_user.id)))
     except HTTPException as exc:
         raise exc
     except Exception as e:

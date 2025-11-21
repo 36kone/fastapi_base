@@ -41,7 +41,7 @@ class UserService(CrudService):
             "User not found",
         )
 
-    async def search(self, keyword: str, size: int, page: int):
+    async def search(self, keyword: str | None, size: int, page: int):
         query = select(User).where(User.deleted_at.is_(None))
         offset = (page - 1) * size
 
@@ -57,8 +57,7 @@ class UserService(CrudService):
         if keyword:
             count_stmt = count_stmt.where(User.name.ilike(f"%{keyword}%"))
 
-        total = self.session.scalar(count_stmt)
-
+        total: int = self.session.scalar(count_stmt)
         stmt = query.limit(size).offset(offset)
         items = self.session.scalars(stmt).all()
         return items, total

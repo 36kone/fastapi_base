@@ -36,7 +36,7 @@ class ConfigTableService(CrudService):
         ).all()
         return {key: value for key, value in rows}
 
-    async def search(self, keyword: str, size: int, page: int):
+    async def search(self, keyword: str | None, size: int, page: int):
         base = select(ConfigTable)
         offset = (page - 1) * size
 
@@ -50,7 +50,7 @@ class ConfigTableService(CrudService):
             pattern = f"%{keyword}%"
             count_stmt = count_stmt.where(ConfigTable.key.ilike(pattern))
 
-        total = self.session.scalar(count_stmt)
+        total: int = self.session.scalar(count_stmt)
         stmt = base.limit(size).offset(offset)
         items = self.session.scalars(stmt).all()
         return items, total

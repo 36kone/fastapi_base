@@ -1,3 +1,4 @@
+from typing import cast
 from uuid import UUID
 
 # from fastapi import Request
@@ -34,7 +35,7 @@ class AuthService:
         user = self.user_service.get_by_email(form_data.username)
 
         ensure_or_400(
-            verify_password(form_data.password, user.password),
+            verify_password(form_data.password, (cast(str, user.password))),
             "Invalid password",
         )
 
@@ -43,7 +44,7 @@ class AuthService:
     def change_password(self, data: ChangePasswordRequest, user_id: UUID):
         current_user = self.user_service.get_by_id(user_id)
         ensure_or_400(
-            verify_password(data.current_password, current_user.password),
+            verify_password(data.current_password, (cast(str, current_user.password))),
             "Current password is incorrect",
         )
 

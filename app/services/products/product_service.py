@@ -23,7 +23,7 @@ class ProductService(CrudService):
     def get_by_id(self, id_: UUID) -> Product:
         return self.get_entity_by_id(id_)
 
-    async def search(self, keyword: str, size: int, page: int):
+    async def search(self, keyword: str | None, size: int, page: int):
         offset = (page - 1) * size
         query = select(Product).where(Product.deleted_at.is_(None))
 
@@ -53,8 +53,7 @@ class ProductService(CrudService):
                 )
             )
 
-        total = self.session.scalar(count_stmt)
-
+        total: int = self.session.scalar(count_stmt)
         stmt = query.limit(size).offset(offset)
         items = self.session.scalars(stmt).all()
         return items, total

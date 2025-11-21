@@ -22,7 +22,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 bearer_scheme = HTTPBearer(auto_error=False)
 
 
-def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
+def create_access_token(data: dict, expires_delta: timedelta | None) -> str:
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(UTC) + expires_delta
@@ -37,7 +37,8 @@ def create_user_access_token(user):
         {
             "id": str(user.id),
             "username": str(user.email),
-        }
+        },
+        expires_delta=None,
     )
     return Token(
         access_token=access_token,
