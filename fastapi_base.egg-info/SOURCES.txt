@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+fastapi_base.egg-info/PKG-INFO
+fastapi_base.egg-info/SOURCES.txt
+fastapi_base.egg-info/dependency_links.txt
+fastapi_base.egg-info/requires.txt
+fastapi_base.egg-info/top_level.txt
+tests/test_order_items.py
+tests/test_orders.py
+tests/test_products.py
+tests/test_users.py
