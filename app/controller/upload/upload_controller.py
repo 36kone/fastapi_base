@@ -3,14 +3,13 @@ import logging
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 
 from app.db.database import get_db
-from app.dependencies.authentication import get_auth_user
-from app.models import User
+from app.dependencies.authentication import auth_guard
 from app.schemas import UploadMessage
 from app.services.upload.upload_service import UploadService
 from app.services.bucket.base import BucketService
 from app.services.bucket.factory import get_bucket_service
 
-upload_router = APIRouter()
+upload_router = APIRouter(dependencies=[Depends(auth_guard)])
 logger = logging.getLogger("upload")
 
 
@@ -19,7 +18,6 @@ async def upload(
     type_: str,
     file: UploadFile = File(...),
     bucket: BucketService = Depends(get_bucket_service),
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:

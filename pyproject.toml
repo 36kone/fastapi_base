@@ -12,7 +12,7 @@ dependencies = [
     "botocore==1.38.46",
     "email-validator==2.3.0",
     "factory-boy==3.3.3",
-    "fastapi==0.120.0",
+    "fastapi[standard]==0.120.0",
     "fastapi-mail==1.5.0",
     "httpx==0.28.1",
     "jinja2==3.1.6",
@@ -32,6 +32,7 @@ dependencies = [
     "ruff==0.14.2",
     "sqlalchemy==2.0.44",
     "uvicorn==0.38.0",
+    "slowapi>=0.1.9",
 ]
 
 [tool.setuptools.packages.find]

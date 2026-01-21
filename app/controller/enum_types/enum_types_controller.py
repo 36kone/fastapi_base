@@ -3,25 +3,22 @@ from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Depends
 
-from app.dependencies.authentication import get_auth_user
+from app.dependencies.authentication import auth_guard
 from app.schemas import (
     EnumTypesSchema,
     EnumTypesResponse,
     MessageSchema,
     EnumTypesUpdate,
 )
-from app.models import User
 from app.services.enum_types.enum_types_service import EnumTypesService
 from app.db.database import get_db
 
-enum_types_router = APIRouter()
+enum_types_router = APIRouter(dependencies=[Depends(auth_guard)])
 logger = logging.getLogger("enum-types")
 
 
 @enum_types_router.post("/", status_code=201, response_model=EnumTypesResponse)
-def create_enum_types(
-    enum_types: EnumTypesSchema, current_user: User = Depends(get_auth_user)
-):
+def create_enum_types(enum_types: EnumTypesSchema):
     try:
         with get_db() as db:
             service = EnumTypesService(db)
@@ -36,7 +33,7 @@ def create_enum_types(
 
 
 @enum_types_router.get("/", status_code=200, response_model=list[EnumTypesResponse])
-def read_enum_types(current_user: User = Depends(get_auth_user)):
+def read_enum_types():
     try:
         with get_db() as db:
             service = EnumTypesService(db)
@@ -53,7 +50,7 @@ def read_enum_types(current_user: User = Depends(get_auth_user)):
 @enum_types_router.get(
     "/type/{type}", status_code=200, response_model=list[EnumTypesResponse]
 )
-def get_enum_types_by_type(type: str, current_user: User = Depends(get_auth_user)):
+def get_enum_types_by_type(type: str):
     try:
         with get_db() as db:
             service = EnumTypesService(db)
@@ -67,13 +64,13 @@ def get_enum_types_by_type(type: str, current_user: User = Depends(get_auth_user
         raise e
 
 
-@enum_types_router.get("/{id}", status_code=200, response_model=EnumTypesResponse)
-def get_enum_type_by_id(id: UUID, current_user: User = Depends(get_auth_user)):
+@enum_types_router.get("/{id_}", status_code=200, response_model=EnumTypesResponse)
+def get_enum_type_by_id(id_: UUID):
     try:
         with get_db() as db:
             service = EnumTypesService(db)
 
-            return service.get_by_id(id)
+            return service.get_by_id(id_)
     except HTTPException as exc:
         logging.info(f"[GET_ENUM_TYPE_BY_ID] -> {exc}")
         raise exc
@@ -83,9 +80,7 @@ def get_enum_type_by_id(id: UUID, current_user: User = Depends(get_auth_user)):
 
 
 @enum_types_router.put("/{id}", status_code=200, response_model=EnumTypesResponse)
-def update_enum_type(
-    data: EnumTypesUpdate, current_user: User = Depends(get_auth_user)
-):
+def update_enum_type(data: EnumTypesUpdate):
     try:
         with get_db() as db:
             service = EnumTypesService(db)
@@ -99,13 +94,13 @@ def update_enum_type(
         raise e
 
 
-@enum_types_router.delete("/{id}", status_code=200, response_model=MessageSchema)
-def delete_enum_type(id: UUID, current_user: User = Depends(get_auth_user)):
+@enum_types_router.delete("/{id_}", status_code=200, response_model=MessageSchema)
+def delete_enum_type(id_: UUID):
     try:
         with get_db() as db:
             service = EnumTypesService(db)
 
-            return service.delete(id)
+            return service.delete(id_)
     except HTTPException as exc:
         logging.info(f"[DELETE_ENUM_TYPE] -> {exc}")
         raise exc

@@ -3,8 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.db.database import get_db
-from app.dependencies.authentication import get_auth_user
-from app.models import User
+from app.dependencies.authentication import auth_guard
 from app.schemas import (
     UserResponse,
     CreateUser,
@@ -15,13 +14,12 @@ from app.schemas import (
 from app.schemas.users.user_schema import UserSearchRequest
 from app.services.user.user_service import UserService
 
-user_router = APIRouter()
+user_router = APIRouter(dependencies=[Depends(auth_guard)])
 
 
 @user_router.post("/", status_code=201, response_model=UserResponse)
 def create_user(
     data: CreateUser,
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:
@@ -35,7 +33,7 @@ def create_user(
 
 
 @user_router.get("/", status_code=200, response_model=list[UserResponse])
-def read_users(current_user: User = Depends(get_auth_user)):
+def read_users():
     try:
         with get_db() as db:
             service = UserService(db)
@@ -50,7 +48,6 @@ def read_users(current_user: User = Depends(get_auth_user)):
 @user_router.get("/{id_}", status_code=200, response_model=UserResponse)
 def get_user_by_id(
     id_: UUID,
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:
@@ -66,7 +63,6 @@ def get_user_by_id(
 @user_router.get("/user/{email}", status_code=200, response_model=UserResponse)
 def get_user_by_email(
     email: str,
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:
@@ -84,7 +80,6 @@ def get_user_by_email(
 )
 async def search_users(
     search_request: UserSearchRequest,
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:
@@ -113,7 +108,6 @@ async def search_users(
 @user_router.put("/{id_}", status_code=200, response_model=UserResponse)
 def update_user(
     data: UpdateUser,
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:
@@ -129,7 +123,6 @@ def update_user(
 @user_router.delete("/{id_}", status_code=200, response_model=MessageSchema)
 def delete_user(
     id_: UUID,
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:

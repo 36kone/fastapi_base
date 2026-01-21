@@ -1,5 +1,5 @@
 from datetime import datetime, UTC, timedelta
-from typing import Any
+from typing import Any, Callable
 from uuid import UUID
 
 from fastapi.security import (
@@ -10,7 +10,7 @@ from fastapi.security import (
 from sqlalchemy import select
 
 from app.core.config import settings
-from fastapi import Depends, HTTPException, Security
+from fastapi import Depends, HTTPException, Security, Request
 from jose import jwt, JWTError
 
 from app.db.database import get_db
@@ -73,8 +73,9 @@ def verify_token(token: str = Depends(oauth2_scheme)):
 def get_auth_user(
     bearer: HTTPAuthorizationCredentials = Security(bearer_scheme),
     oauth2: str | None = Depends(oauth2_scheme),
-):
+) -> User:
     token = bearer.credentials if bearer else oauth2
+    
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
@@ -90,8 +91,8 @@ def get_auth_user(
 
     try:
         user_id = UUID(payload.get("id"))
-    except Exception:
-        raise credentials_exception
+    except Exception as e:
+        raise credentials_exception from e
 
     query = select(User).where(User.id == user_id)
 
@@ -101,3 +102,22 @@ def get_auth_user(
     if not user_id:
         raise credentials_exception
     return user
+
+
+def auth_guard(request: Request, user: User = Depends(get_auth_user)) -> None:
+    endpoint = request.scope.get("endpoint")
+
+    if not endpoint:
+        return
+
+    roles = getattr(endpoint, "__required_roles__", [])
+
+    if roles and user.role not in roles:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+
+def required_permissions(*, roles: list[str] | None = None) -> Callable:
+    def decorator(func: Callable):
+        func.__required_roles__ = roles or []
+        return func
+    return decorator

@@ -3,8 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Depends
 
-from app.dependencies.authentication import get_auth_user
-from app.models import User
+from app.dependencies.authentication import auth_guard
 from app.schemas import (
     ConfigTableResponse,
     CreateConfigTable,
@@ -18,14 +17,12 @@ from app.schemas import (
 from app.services.config_table.config_table_service import ConfigTableService
 from app.db.database import get_db
 
-config_table_router = APIRouter()
+config_table_router = APIRouter(dependencies=[Depends(auth_guard)])
 logger = logging.getLogger("config-table")
 
 
 @config_table_router.post("/", status_code=201, response_model=ConfigTableResponse)
-def create_config(
-    config: CreateConfigTable, current_user: User = Depends(get_auth_user)
-):
+def create_config(config: CreateConfigTable):
     try:
         with get_db() as db:
             service = ConfigTableService(db)
@@ -40,9 +37,7 @@ def create_config(
 
 
 @config_table_router.get("/", response_model=list[ConfigTableResponse])
-def read_configs(
-    current_user: User = Depends(get_auth_user),
-):
+def read_configs():
     try:
         with get_db() as db:
             service = ConfigTableService(db)
@@ -57,10 +52,7 @@ def read_configs(
 
 
 @config_table_router.get("/{id_}", response_model=ConfigTableResponse)
-def get_config_by_id(
-    id_: UUID,
-    current_user: User = Depends(get_auth_user),
-):
+def get_config_by_id(id_: UUID):
     try:
         with get_db() as db:
             service = ConfigTableService(db)
@@ -77,10 +69,7 @@ def get_config_by_id(
 @config_table_router.post(
     "/search", status_code=200, response_model=PaginatedResponse[ConfigTableResponse]
 )
-async def search_parameters(
-    request: ConfigTableSearchRequest,
-    current_user: User = Depends(get_auth_user),
-):
+async def search_parameters(request: ConfigTableSearchRequest):
     try:
         with get_db() as db:
             service = ConfigTableService(db)
@@ -109,10 +98,7 @@ async def search_parameters(
 
 
 @config_table_router.get("/value/{key}", response_model=ConfigTableValueResponse)
-def get_config_value_by_key(
-    key: str,
-    current_user: User = Depends(get_auth_user),
-):
+def get_config_value_by_key(key: str):
     try:
         with get_db() as db:
             service = ConfigTableService(db)
@@ -129,10 +115,7 @@ def get_config_value_by_key(
 
 
 @config_table_router.post("/values", response_model=dict[str, str])
-def get_values_by_keyword(
-    data: ConfigTableGetValuesRequest,
-    current_user: User = Depends(get_auth_user),
-):
+def get_values_by_keyword(data: ConfigTableGetValuesRequest):
     try:
         with get_db() as db:
             service = ConfigTableService(db)
@@ -147,10 +130,7 @@ def get_values_by_keyword(
 
 
 @config_table_router.put("/{id_}", response_model=ConfigTableResponse)
-def update_config(
-    data: UpdateConfigTable,
-    current_user: User = Depends(get_auth_user),
-):
+def update_config(data: UpdateConfigTable):
     try:
         with get_db() as db:
             service = ConfigTableService(db)
@@ -165,10 +145,7 @@ def update_config(
 
 
 @config_table_router.delete("/{id_}", response_model=MessageSchema)
-def delete_config(
-    id_: UUID,
-    current_user: User = Depends(get_auth_user),
-):
+def delete_config(id_: UUID):
     try:
         with get_db() as db:
             service = ConfigTableService(db)

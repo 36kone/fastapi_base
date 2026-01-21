@@ -3,8 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.db.database import get_db
-from app.dependencies.authentication import get_auth_user
-from app.models import User
+from app.dependencies.authentication import auth_guard
 from app.schemas import (
     OrderResponse,
     CreateOrder,
@@ -14,14 +13,15 @@ from app.schemas import (
     OrderSearchRequest,
 )
 from app.services.orders.orders_service import OrderService
+from app.dependencies.current_user import CurrentUser
 
-orders_router = APIRouter()
+orders_router = APIRouter(dependencies=[Depends(auth_guard)])
 
 
 @orders_router.post("/", status_code=201, response_model=OrderResponse)
 async def create_order(
     data: CreateOrder,
-    current_user: User = Depends(get_auth_user),
+    current_user: CurrentUser,
 ):
     try:
         with get_db() as db:
@@ -35,7 +35,7 @@ async def create_order(
 
 
 @orders_router.get("/", status_code=200, response_model=list[OrderResponse])
-async def read_orders(current_user: User = Depends(get_auth_user)):
+async def read_orders():
     try:
         with get_db() as db:
             service = OrderService(db)
@@ -50,7 +50,6 @@ async def read_orders(current_user: User = Depends(get_auth_user)):
 @orders_router.get("/{id_}", status_code=200, response_model=OrderResponse)
 async def get_order_by_id(
     id_: UUID,
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:
@@ -68,7 +67,6 @@ async def get_order_by_id(
 )
 async def get_orders_by_user_id(
     user_id: UUID,
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:
@@ -86,7 +84,6 @@ async def get_orders_by_user_id(
 )
 async def search_orders(
     search_request: OrderSearchRequest,
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:
@@ -112,7 +109,6 @@ async def search_orders(
 async def update_order(
     id_: UUID,
     data: UpdateOrder,
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:
@@ -128,7 +124,6 @@ async def update_order(
 @orders_router.delete("/{id_}", status_code=200, response_model=MessageSchema)
 async def delete_order(
     id_: UUID,
-    current_user: User = Depends(get_auth_user),
 ):
     try:
         with get_db() as db:
